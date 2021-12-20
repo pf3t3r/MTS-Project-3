@@ -4,7 +4,7 @@ Tend=t(end);
 deltaTfix=Kv/Ws^2;            % Maximum time step allowed.
 
 if deltaTfix>deltaT             % If deltaT<deltaTmax 
-    deltaTfix=deltaT;
+    deltaTfix=deltaT;           % WHY?
 else
     deltaT=deltaTfix;
 end
@@ -54,7 +54,7 @@ while tt(k)<Tend
     % corrector step. see assignment. 
     
     % Uf(k+1)=interp1
-    % E(k+1)
+    % E(k+1)=
     % Etc
     
     
