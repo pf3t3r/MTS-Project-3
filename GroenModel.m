@@ -21,14 +21,14 @@ while tt(k)<Tend
     %************************************************
     
     % Predictor step
-    Uf(k)=interp1(t,U,tt(k));           % Because time step might be different than prescribed, an interpolation step is needed.
+    Uf(k) = interp1(t,U,tt(k));           % Because time step might be different than prescribed, an interpolation step is needed.
    
     % Make rest of code here. See assignment for more information.
-    % deltaT(k)=
-    % E(k)=erosion.
-    % D(k)=deposition
+    deltaT(k) = deltaT;
+    E(k) = alpha * U.^2;
+    D(k) = Ws.^2 ./ Kv;
     % New C will be caused by difference betwen erosion and deposition
-    % C(k+1)=C(k)+(E(k)-D(k))*deltaT(k)
+    C(k+1) = C(k) + (E(k) - D(k))*deltaT(k);
     
     %*********************************************
     % End of predictor step
