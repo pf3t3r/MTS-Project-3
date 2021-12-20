@@ -72,11 +72,25 @@ U=HydroModel2(t,Z,dZdt,H,dHdx,x,dx);
 % Here you have to calculate the sediment concentrations with the Groen
 % model. This is a Matlab function which has as input the flow velocity, the relevant
 % parameters, and time. For each position in the basin do a call to this
-% Groenmodel.You have to finish the Groen model yourself.
+% Groenmodel. 
 
 for px=1:Nx
     [C(px,1:Nt)]=GroenModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv);
 end
+
+figure
+plot(t,C)
+hold on
+plot(t,U)
+hold off
+
+[C_Max,I]=min(max(C(1,:)))
+t_C_Max=t(I);
+
+[U_Max,I]=min(max(abs(U(1,:))))
+t_U_Max=t(I);
+
+Diff=(t_C_Max-t_U_Max)/3600 
 
 Qs=U.*C;                                            % Qs is sediment flux
 
@@ -101,10 +115,10 @@ Nsteps=T/deltaT;                                    % Nr of timestepf in one tid
 % [dQsdt dQsdx]=gradient(Qs,deltaT,dx);
 %**************************************************************************
 
-for px=1:Nx
-    [C2(px,1:Nt)]=CModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv, dQsdx(px,1:Nt));
-end
-
-Qs2=U.*C2;
+% for px=1:Nx
+%     [C2(px,1:Nt)]=CModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv, dQsdx(px,1:Nt));
+% end
+% 
+% Qs2=U.*C2;
 
 
