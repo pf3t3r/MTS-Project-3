@@ -23,11 +23,10 @@ while tt(k)<Tend
     % Predictor step
     Uf(k) = interp1(t,U,tt(k));           % Because time step might be different than prescribed, an interpolation step is needed.
    
-    % Define variables
+    % Make rest of code here. See assignment for more information.
     deltaT(k) = deltaT;
     E(k) = alpha * Uf(k).^2;
     D(k) = (Ws.^2 ./ Kv) * C(k);
-    
     % New C will be caused by difference betwen erosion and deposition
     C(k+1) = C(k) + (E(k) - D(k))*deltaT(k);
     
@@ -52,15 +51,11 @@ while tt(k)<Tend
     tt(k+1)=tt(k)+deltaT(k);
     
     %*****************************************************************
-    % Corrector step. 
+    % corrector step. see assignment. 
     
-    % Define variables 
     Uf(k+1)=interp1(t,Uf(k),tt(k))
-    E(k+1) = alpha * Uf(k+1).^2;
-    D(k+1) = (Ws.^2./Kv) * C(k+1);
-    
-    % New C will be caused by difference betwen erosion and deposition
-    C(k+1) = C(k) + (E(k) + E(k+1) - D(k) - D(k+1)) * (deltaT(k)*0.5);
+    E(k+1) = E(k) + alpha * Uf(k+1).^2;
+    D(k+1) = D(k) + (Ws.^2./Kv) * C(k+1);
     
     %******************************************************************
     % End of corrector step
