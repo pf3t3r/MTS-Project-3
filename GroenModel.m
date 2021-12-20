@@ -15,7 +15,7 @@ end
 % initialise solution at t=0
 k=1;
 tt(1)=t(1);
-C(1)=0.0;
+C(1)=0.0; %concentration is zero at the start of calculations 
 
 while tt(k)<Tend  
     %************************************************
