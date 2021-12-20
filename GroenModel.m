@@ -24,7 +24,7 @@ while tt(k)<Tend
     Uf(k) = interp1(t,U,tt(k));           % Because time step might be different than prescribed, an interpolation step is needed.
    
     % Define variables
-    deltaT(k) = deltaT;
+    deltaT(k) = deltaTfix;
     E(k) = alpha * Uf(k).^2;
     D(k) = (Ws.^2 ./ Kv) * C(k);
     
@@ -55,7 +55,7 @@ while tt(k)<Tend
     % Corrector step. 
     
     % Define variables 
-    Uf(k+1)=interp1(t,Uf(k),tt(k))
+    Uf(k+1)=interp1(t,U,tt(k+1));
     E(k+1) = alpha * Uf(k+1).^2;
     D(k+1) = (Ws.^2./Kv) * C(k+1);
     
