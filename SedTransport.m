@@ -95,7 +95,7 @@ t_U_Max=t(U(1,:)==U_Max);
 
 %Time difference between peaks
 Diff=(t_C_Max-t_U_Max)/3600;
-DIFF_ws=[DIFF Diff];
+DIFF_ws=[DIFF_ws Diff];
 end 
 
 figure
@@ -197,7 +197,7 @@ t_U_Max=t(U(1,:)==U_Max);
 
 %Time difference between peaks
 Diff=(t_C_Max-t_U_Max)/3600;
-DIFF_kv=[DIFF Diff];
+DIFF_kv=[DIFF_kv Diff];
 end 
 
 figure
