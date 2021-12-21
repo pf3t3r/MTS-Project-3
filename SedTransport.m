@@ -85,12 +85,21 @@ for px=1:Nx
     [C(px,1:Nt)]=GroenModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv);
 end
 
+%Spot the correct section to consider for U_Max and C_Max
+% figure
+% yyaxis left
+% plot(t,C(1,:))
+% hold on
+% yyaxis right
+% plot(t,U(1,:))
+% hold off
+
 %Peak sediment concentration and time 
-C_Max=max(C(1,201:371));
+C_Max=max(C(1,101:201));
 t_C_Max=t(C(1,:)==C_Max);
 
 %Peak flood flow and time 
-U_Max=max(U(1,201:371));
+U_Max=max(U(1,101:201));
 t_U_Max=t(U(1,:)==U_Max);
 
 %Time difference between peaks
@@ -188,11 +197,11 @@ end
 
 
 %Peak sediment concentration and time 
-C_Max=max(C(1,201:371));
+C_Max=max(C(1,101:201));
 t_C_Max=t(C(1,:)==C_Max);
 
 %Peak flood flow and time 
-U_Max=max(U(1,201:371));
+U_Max=max(U(1,101:201));
 t_U_Max=t(U(1,:)==U_Max); 
 
 %Time difference between peaks
