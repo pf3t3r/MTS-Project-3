@@ -108,10 +108,10 @@ DIFF_ws=[DIFF_ws Diff];
 end 
 
 figure
-plot(WS,DIFF_ws)
+plot(WS,abs(DIFF_ws))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying fall velocities (W_s)');
 xlabel('W_{s} [m/s]');
-ylabel('t [h]');
+ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_i');
 
@@ -210,10 +210,10 @@ DIFF_kv=[DIFF_kv Diff];
 end 
 
 figure
-plot(KV,DIFF_kv)
+plot(KV,abs(DIFF_kv))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying eddy diffusivities (K_v)');
 xlabel('K_{v} [m^{2}/s]');
-ylabel('t [h]');
+ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_ii');
 
@@ -319,8 +319,8 @@ DIFF_phase=[DIFF_phase Diff];
 end
 
 figure
-plot(PhaseM4,DIFF_phase)
-title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying phase differences between M2 and M4');
+plot(PhaseM4,abs(DIFF_phase))
+title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying relative phase differences between M2 and M4');
 xlabel('Phase difference [rad]');
 ylabel('Concentration [kg/m^2]');
 grid on;
@@ -428,7 +428,7 @@ DIFF_ws_ii=[DIFF_ws_ii Diff];
 end
 
 figure
-plot(PhaseM4,DIFF_ws_ii)
+plot(WS,abs(DIFF_ws_ii))
 title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying fall velocities (W_s)');
 xlabel('W_{s} [m/s]');
 ylabel('Concentration [kg/m^2]');
@@ -537,7 +537,7 @@ DIFF_kv_ii=[DIFF_kv_ii Diff];
 end
 
 figure
-plot(PhaseM4,DIFF_kv_ii)
+plot(kV,abs(DIFF_kv_ii))
 title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying eddy diffusivities (K_v)');
 xlabel('K_{v} [m^{2}/s]');
 ylabel('Concentration [kg/m^2]');
