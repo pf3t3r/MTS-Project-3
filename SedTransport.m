@@ -1,22 +1,25 @@
-clear
-clc
-close all
+clear; clc; close all;
 
 %**************************************************************************
 % Parameters needed for the sediment transport calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Part 1.a.i
+%% Part 1: Sediment Transport with Groen's Model
+
+%% 1.1: Sensitivity of the Time Delay between Peak Concentrations to ...
+
+%% 1.1.a Fall Velocity of sediment
 %Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Ws
 WS=linspace(0.5e-3,2e-2,5);
-
 DIFF_ws=[];
+
 for i=1:5
-    Ws=WS(i);
+    
+Ws=WS(i);
 %**************************************************************************
 %           Define time domain
 %**************************************************************************
@@ -65,7 +68,8 @@ Nx=length(x);
 %           Bed level in basin
 %**************************************************************************
 
-H=10-8e-4*x;             % Bottom profile. Linear sloping bottom. 2 m deep near landward boundary, 10 m deep near inlet. 
+H=10-8e-4*x;             % Bottom profile. Linear sloping bottom.
+                         % 2 m deep near landward boundary, 10 m deep near inlet. 
 dHdx(1:Nx)=-8e-4;
 
 %**************************************************************************
@@ -115,7 +119,7 @@ ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_i');
 
-%% Part 1.a.ii
+%% Part 1.1.b: Eddy Diffusivity
 
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
@@ -217,7 +221,10 @@ ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_ii');
 
-%% Part 1.b.i
+%% 1.2: Sensitivity of the difference in peak sediment concentration at peak ebb and flood to ...
+
+%% Part 1.2.a: Relative phase difference between M2 and M4
+
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
@@ -326,7 +333,8 @@ ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_iii');
 
-%% Part 1.b.ii
+%% Part 1.2.b: Fall Velocity of the sediment
+
 %Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
@@ -435,9 +443,10 @@ ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_iv');
 
-%% Part 1.b.iii
-Ws=1e-3;                % Fall velocity of sediment
-alpha=1e-4;             % Erosion coefficent
+%% Part 1.2.c: Eddy Diffusivity
+
+% Ws=1e-3;                % Fall velocity of sediment
+% alpha=1e-4;             % Erosion coefficent
 %Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
@@ -537,7 +546,7 @@ DIFF_kv_ii=[DIFF_kv_ii Diff];
 end
 
 figure
-plot(kV,abs(DIFF_kv_ii))
+plot(KV,abs(DIFF_kv_ii))
 title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying eddy diffusivities (K_v)');
 xlabel('K_{v} [m^{2}/s]');
 ylabel('Concentration [kg/m^2]');
