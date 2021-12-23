@@ -1,4 +1,4 @@
-function U=HydroModel(t,Z,dZdt,H,dHdx,x,dx)
+function U=HydroModel2(t,Z,dZdt,H,dHdx,x,dx)
 
 
 % Hydromodel.
