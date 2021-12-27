@@ -35,16 +35,19 @@ while tt(k)<Tend
     % End of predictor step
     %*********************************************
     
-    % Problem: predicted sediment concentration can become negative. Check for that. If C is negative: take smaller
-    % time step.
+    % Problem: predicted sediment concentration can become negative. Check
+    % for that. If C is negative: take smaller time step.
     if C(k+1)<0
-        deltaT(k)=C(k)/D(k)*0.5;            % C(k)/D(k) is estimated time to deposit all sediment that is in water column. 
+        deltaT(k)=C(k)/D(k)*0.5;            % C(k)/D(k) is estimated time
+                                            % to deposit all sediment that
+                                            % is in water column. 
         C(k+1)=C(k)+(E(k)-D(k))*deltaT(k);  % 
     else
         deltaT(k)=deltaTfix;
     end
     
-    if tt(k)+deltaT(k)>Tend                 % Don't let the time go beyond the final time step. 
+    if tt(k)+deltaT(k)>Tend                 % Don't let the time go beyond
+                                            % the final time step. 
         deltaT(k)=Tend-tt(k);
     end
    
@@ -66,7 +69,6 @@ while tt(k)<Tend
     % End of corrector step
     
     k=k+1;
-    
     
 end
 
