@@ -16,7 +16,7 @@ L=x(end);
 
 testPlane=cumsum(abs(dHdx)>0);
 
-%solve dZdt+d/dx Hu=0, assuming dZdx=0. So U * dHdx + (H+Z) dU/dx=-dZ/dt
+% solve dZdt + d/dx Hu=0, assuming dZdx=0. So U*dHdx + (H+Z)*dU/dx = -dZ/dt
 % U=0 at seaward boundary.
 
 if testPlane==0
