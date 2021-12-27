@@ -8,7 +8,7 @@ clear; clc; close all;
 
 %% 1.1: Sensitivity of the Time Delay between Peak Concentrations to ...
 
-%% 1.1.a Fall Velocity of sediment
+%% Part 1.1.a: Fall Velocity of sediment
 %Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
@@ -445,8 +445,8 @@ savefig('Matlab3_1_iv');
 
 %% Part 1.2.c: Eddy Diffusivity
 
-% Ws=1e-3;                % Fall velocity of sediment
-% alpha=1e-4;             % Erosion coefficent
+Ws=1e-3;                % Fall velocity of sediment
+alpha=1e-4;             % Erosion coefficent
 %Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
@@ -552,32 +552,3 @@ xlabel('K_{v} [m^{2}/s]');
 ylabel('Concentration [kg/m^2]');
 grid on;
 savefig('Matlab3_1_v');
-
-%Qs=U.*C;                                            % Qs is sediment flux
-
-%Nsteps=T/deltaT;                                    % Nr of timestepf in one tidal cycle.
-
-%Nsteps=2*T/deltaT                                  % If you have precribed a D1 tide
-
-% calculate tidally averaged sediment transport (only averaging over last tidal cycle)
-%
-%           meanQs=
-%           
-%**************************************************
-
-
-%**************************************************************************
-% Use calculated flux with Groen's model to calculate sediment
-% concentration with model that includes advective fluxes
-%
-% Make Cmodel yourself.
-% It should include a d/dx UC term
-% You can use code like this
-% [dQsdt dQsdx]=gradient(Qs,deltaT,dx);
-%**************************************************************************
-
-% for px=1:Nx
-%     [C2(px,1:Nt)]=CModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv, dQsdx(px,1:Nt));
-% end
-% 
-% Qs2=U.*C2;
