@@ -1,4 +1,4 @@
-function [Conc]=Cmodel(C,U,t,deltaT, T, Ws, alpha, Kv, dQsdx)
+function [Conc]=Cmodel(U,t,deltaT, T, Ws, alpha, Kv, dQsdx)
 
 Tend=t(end);
 deltaTfix=Kv/Ws^2;            % Maximum time step allowed.
@@ -16,7 +16,7 @@ end
 k=1;
 tt(1)=t(1);
 %C(1)=C(1); %concentration is equal to concentration from GroenModel at the start of calulations
-C2(1)=0.0;
+C(1)=0.0;
 %A(1) = dQsdx(1491);
 A(1) = dQsdx(1); %advection at start of calculations from GroenModel
 
@@ -31,8 +31,9 @@ while tt(k)<Tend
     E(k) = alpha * Uf(k).^2;
     D(k) = (Ws.^2 ./ Kv) * C(k);
     Qs(k) = Uf(k).*C(k);
-    dx = 400;
-    A(k) = gradient(Qs(k),deltaT,dx);
+    %dx = 400;
+    %A(k) = gradient(Qs(k),deltaT,dx);
+    A(k) = dQsdx(k);
     
     % New C will be caused by difference betwen erosion and deposition with
     % advection. It includes a d/dx UC term
@@ -70,7 +71,8 @@ while tt(k)<Tend
     E(k+1) = alpha * Uf(k+1).^2;
     D(k+1) = (Ws.^2./Kv) * C(k+1);
     Qs(k+1) = Uf(k+1).*C(k+1);
-    A(k+1) = gradient(Qs(k+1),deltaT,dx);
+    %A(k+1) = gradient(Qs(k+1),deltaT,dx);
+     A(k+1) = dQsdx(k+1);
     
     % New C will be caused by difference betwen erosion and deposition
     C(k+1) = C(k) + (E(k) + E(k+1) - D(k) - D(k+1) - A(k) - A(k+1)) * (deltaT(k)*0.5);
