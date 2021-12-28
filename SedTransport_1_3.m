@@ -7,7 +7,8 @@ clc; clear; close all;
 alpha = 1e-4;                   % Erosion coefficent
 Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
 WS = linspace(0.5e-3,2e-2,10);   % Possible values for the fall velocity
- 
+diffWs = [];
+
 % Iterate across possible fall velocities
 for i = 1:length(WS)
     
@@ -66,7 +67,15 @@ for i = 1:length(WS)
     % Save C and U for each value of WS at the first point in x.    
     C_Ws(i,:) = C(1,:);
     U_Ws(i,:) = U(1,:);
-  
+    
+    firstPeakInC = max(C(1,100:200));
+    firstPeakInU = max(U(1,100:200));
+    
+    timeOfFirstPeakInC = t(C(1,:)==firstPeakInC);
+    timeOfFirstPeakInU = t(U(1,:)==firstPeakInU);
+    
+    durationDiff = (timeOfFirstPeakInC - timeOfFirstPeakInU)/3600;
+    diffWs = [diffWs durationDiff];
 end
 
 % Quick update for legends
@@ -76,7 +85,7 @@ end
 
 figure
 
-subplot(3,1,1)
+subplot(4,1,1)
 yyaxis left
 plot(t,C_Ws(1,:))
 ylabel('C [kg/m^2]');
@@ -90,7 +99,7 @@ grid(gca,'minor')
 grid on;
 title('Sensitivity of Duration Asymmetry to Fall Velocity: I')
 
-subplot(3,1,2)
+subplot(4,1,2)
 yyaxis left
 plot(t,C_Ws(2:3,:))
 ylabel('C [kg/m^2]');
@@ -103,7 +112,7 @@ grid(gca,'minor');
 grid on;
 title('Sensitivity of Duration Asymmetry to Fall Velocity: II - III')
 
-subplot(3,1,3)
+subplot(4,1,3)
 yyaxis left
 plot(t,C_Ws(4:end,:))
 ylabel('C [kg/m^2]');
@@ -116,6 +125,14 @@ grid(gca,'minor');
 grid on;
 title('Sensitivity of Duration Asymmetry to Fall Velocity: IV - X')
 
+subplot(4,1,4)
+plot(WS,diffWs)
+xlabel('W_s [m/s]');
+ylabel('\Deltat [hrs]');
+grid(gca,'minor')
+grid on;
+title('Sensitivity of Duration Asymmetry to Fall Velocity')
+
 savefig('pt-1-3-a');
 
 
@@ -124,6 +141,7 @@ savefig('pt-1-3-a');
 alpha = 1e-4;                   % Erosion coefficent
 Ws = 1e-3;                      % Fall velocity of sediment
 KV = linspace(1e-3,1e-1,10);    % Array of eddy diffusivities
+diffKv = [];
 
 % Iterate across possible eddy diffusivities
 for i = 1:length(KV)
@@ -183,6 +201,15 @@ for i = 1:length(KV)
     % Save C and U for each value of KV at the first point in x.    
     C_Kv(i,:) = C(1,:);
     U_Kv(i,:) = U(1,:);
+    
+    firstPeakInC = max(C(1,100:200));
+    firstPeakInU = max(U(1,100:200));
+    
+    timeOfFirstPeakInC = t(C(1,:)==firstPeakInC);
+    timeOfFirstPeakInU = t(U(1,:)==firstPeakInU);
+    
+    durationDiff = (timeOfFirstPeakInC - timeOfFirstPeakInU)/3600;
+    diffKv = [diffKv durationDiff];
   
 end
 
@@ -193,7 +220,7 @@ end
 
 figure
 
-subplot(3,1,1)
+subplot(4,1,1)
 yyaxis left
 plot(t,C_Kv(1:3,:))
 ylabel('C [kg/m^2]');
@@ -201,13 +228,12 @@ hold on
 yyaxis right
 plot(t,U_Kv(1,:))
 ylabel('U [m/s]');
-% legend('Ws = 0.0005');
 legend(Kv_legend(1:3));
 grid(gca,'minor')
 grid on;
 title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: I - III')
 
-subplot(3,1,2)
+subplot(4,1,2)
 yyaxis left
 plot(t,C_Kv(4:6,:))
 ylabel('C [kg/m^2]');
@@ -220,7 +246,7 @@ grid(gca,'minor')
 grid on;
 title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: IV - VI')
 
-subplot(3,1,3)
+subplot(4,1,3)
 yyaxis left
 plot(t,C_Kv(7:end,:))
 ylabel('C [kg/m^2]');
@@ -232,5 +258,13 @@ legend(Kv_legend(7:end));
 grid(gca,'minor')
 grid on;
 title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: VII - X')
+
+subplot(4,1,4)
+plot(KV,diffKv)
+xlabel('K_v [m^{2}/s]');
+ylabel('\Deltat [hrs]');
+grid(gca,'minor')
+grid on;
+title('Sensitivity of Duration Asymmetry to Eddy Diffusivity')
 
 savefig('pt-1-3-b');
