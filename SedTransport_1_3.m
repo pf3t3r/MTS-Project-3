@@ -215,7 +215,7 @@ end
 
 % Quick update for legends
  for i = 1:length(KV)
-      Kv_legend{i} = num2str(KV(i),'W_s = %.4f m/s');
+      Kv_legend{i} = num2str(KV(i),'K_v = %.4f m^2/s');
  end
 
 figure
