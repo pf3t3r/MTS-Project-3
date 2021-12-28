@@ -105,15 +105,16 @@ meanQs=S_Qs/149;
 % It should include a d/dx UC term
 % You can use code like this
 [dQsdt dQsdx]=gradient(Qs,deltaT,dx);
+%[dQsdt dQsdx]=gradient(meanQs,deltaT,dx);
 %**************************************************************************
 
 %I added C to function inputs to make it work but is this correct???
 for px=1:Nx
     [C2(px,1:Nt)]=CModel(C(px,1:Nt),U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv, dQsdx(px,1:Nt));
 end
-
-Qs2=U.*C2;
-
+% 
+% Qs2=U.*C2;
+% 
 figure
 yyaxis left
 plot(t,C(1,:))
@@ -121,13 +122,6 @@ hold on
 plot(t,C2(1,:))
 yyaxis right
 plot(t,Qs(1,:))
-plot(t,Qs2(1,:))
+%plot(t,Qs2(1,:))
 hold off
 
-% figure
-% plot(x,abs(DIFF_kv_ii))
-% title('Sensitivity analysis of difference in peak sediment concentration between peak flow and peak ebb for varying eddy diffusivities (K_v)');
-% xlabel('K_{v} [m^{2}/s]');
-% ylabel('Concentration [kg/m^2]');
-% grid on;
-% savefig('Matlab3_1_v');
