@@ -65,15 +65,20 @@ for i = 1:length(PhaseM4)
     C_phaseM4(i,:) = C(1,:);
     U_phaseM4(i,:) = U(1,:);
     
+    peakFlood(i) = max(findpeaks(U_phaseM4(i,:)));
+    peakEbbLoc = islocalmin(U_phaseM4(i,:));
+    peakEbb(i) = -min(nonzeros(peakEbbLoc.*U_phaseM4(i,:)));
+    
+    netVelocity(i) = peakFlood(i) - peakEbb(i);
 end
 
 % Quick update for legends
  for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i),'Phase = %.4f deg');
+      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi,'phase = %.2f rad');
  end
 
 figure
-subplot(2,1,1)
+subplot(3,1,1)
 
 yyaxis left
 plot(t/3600,C_phaseM4);
@@ -88,7 +93,7 @@ grid(gca,'minor')
 grid on;
 title('Velocity asymmetry and sediment concentration I')
 
-subplot(2,1,2)
+subplot(3,1,2)
 yyaxis left
 plot(t(1:300)/3600,C_phaseM4(:,1:300));
 ylabel('C [kg/m^2]');
@@ -101,6 +106,17 @@ grid(gca,'minor')
 grid on;
 title('Velocity asymmetry and sediment concentration II')
 
+subplot(3,1,3)
+plot(PhaseM4/pi,netVelocity);
+ylabel('Peak Flood - Peak Ebb [m/s]');
+xlabel('Phase of M4 [\pi]');
+title('Velocity asymmetry and phase');
+grid on;
+
+% A positive value for netVelocity indicates a net transport in the flood
+% direction whereas a negative value indicates a net transport in the ebb
+% direction.
+
 savefig('pt-1-4');
 
 
@@ -111,7 +127,7 @@ subplot(2,1,1);
 plot(t,U);
 xlabel('time [s]');
 ylabel('U [m/s]');
-title('Velocity Asymmetry');
+title('Velocity vs Time for 26 locations across the basin');
 grid on;
 legend();
 
