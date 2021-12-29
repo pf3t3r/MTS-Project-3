@@ -126,13 +126,24 @@ Qs2=U.*C2;
 %For inspection
 figure
 yyaxis left
+ylabel('Concentration [kg/m^2]');
 plot(t,C(1,:))
 hold on
 plot(t,C2(1,:))
 yyaxis right
+ylabel('Flux [kg/(m*s)]');
 plot(t,Qs(1,:))
 plot(t,Qs2(1,:))
+xlabel('Time [s]');
+legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
 hold off
+if i==1
+    title('Sediment Concentration and Transport when M4=0');
+    savefig('Matlab3_2_ia');
+elseif i==2 
+    title('Sediment Concentration and Transport when M4={pi}');
+    savefig('Matlab3_2_ib');
+end
 
 %Sediment concentration at flood and ebb
 C_Max(i,:)=findpeaks(C(1,268:435));
@@ -253,20 +264,20 @@ meanQs=S_Qs/149;
 Nsteps=floor(T/deltaT);
 %Harmonic analysis
 for px=1:Nx-1
-coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
-coefout=nlinfit(t(end-Nsteps:end),Z(px,end-Nsteps:end),@harmfit,coefin);
-Z0(i,px)=coefout(1);
-ZM2(i,px)=sqrt(coefout(2).^2+coefout(4).^2);
-ZM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
-phaseZM2(i,px)=atan(coefout(2)/coefout(4));
-phaseZM4(i,px)=atan(coefout(3)/coefout(5));
-coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
-coefout=nlinfit(t(end-Nsteps:end),U(px,end-Nsteps:end),@harmfit,coefin);
+coefin=[0.1, 0.1, 0.1];
+coefout=nlinfit(t,Z(px,:),@harmfit,coefin);
+Z0(px)=coefout(1);
+ZM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
+%ZM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
+phaseZM2(px)=atan(coefout(2)/coefout(3));
+%phaseZM4(i,px)=atan(coefout(3)/coefout(5));
+coefin=[0.1, 0.1, 0.1];
+coefout=nlinfit(t,U,@harmfit,coefin);
 U0(px)=coefout(1);
-UM2(i,px)=sqrt(coefout(2).^2+coefout(4).^2);
-UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
-phaseUM2(i,px)=atan(coefout(2)/coefout(4));
-phaseUM4(i,px)=atan(coefout(3)/coefout(5));
+UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
+%UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
+phaseUM2(px)=atan(coefout(2)/coefout(3));
+%phaseUM4(i,px)=atan(coefout(3)/coefout(5));
 end
 
 Qs_M2=UM2.*C;                                            % Qs is sediment flux
