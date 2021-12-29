@@ -1,18 +1,16 @@
 clc; clear; close all;
 
-%% 1.3: Velocity Asymmetry
+%% 1.4: Velocity Asymmetry
 
 alpha = 1e-4;                   % Erosion coefficent
 Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
-WS = linspace(0.5e-3,2e-2,5);   % Possible values for the fall velocity
- 
-% durationAsymmetry = [];         % Difference between peak ebb and flood
+Ws = 1e-3;                      % Possible values for the fall velocity
 
-% Iterate across possible fall velocities
-
-for i = 1:length(WS)
+% Evaluate velocity asymmetry for different phases
+PhaseM4=(0:45:180)/180*pi;
+for i = 1:length(PhaseM4)
     
-    Ws = WS(i);
+    phaseM4=PhaseM4(i);
     
     T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds. 
     Tend = 10*T;              % Five tidal periods modeled -> for very fine
@@ -29,7 +27,6 @@ for i = 1:length(WS)
     ampM4 = 0.2;
     phaseD1 = 0;
     phaseM2 = 0;
-    phaseM4 = pi/2;
 
     % Water level prescribed below as a sine function.
     Z = ampD1*sin(pi*t/T + phaseD1) + ampM2*sin(2*pi*t/T + phaseM2) + ...
@@ -63,8 +60,51 @@ for i = 1:length(WS)
     for px=1:Nx
         [C(px,1:Nt)] = GroenModel(U(px,1:Nt), t, deltaT, T, Ws, alpha, Kv);
     end
+    
+    % Save C and U for each value of phaseM4 at the first point in x.    
+    C_phaseM4(i,:) = C(1,:);
+    U_phaseM4(i,:) = U(1,:);
+    
 end
 
+% Quick update for legends
+ for i = 1:length(PhaseM4)
+      PhaseM4_legend{i} = num2str(PhaseM4(i),'Phase = %.4f deg');
+ end
+
+figure
+subplot(2,1,1)
+
+yyaxis left
+plot(t/3600,C_phaseM4);
+ylabel('C [kg/m^2]');
+yyaxis right
+plot(t/3600,U_phaseM4);
+hold off
+ylabel('U [m/s]');
+xlabel('t [hrs]');
+legend(PhaseM4_legend);
+grid(gca,'minor')
+grid on;
+title('Velocity asymmetry and sediment concentration I')
+
+subplot(2,1,2)
+yyaxis left
+plot(t(1:300)/3600,C_phaseM4(:,1:300));
+ylabel('C [kg/m^2]');
+yyaxis right
+plot(t(1:300)/3600,U_phaseM4(:,1:300));
+ylabel('U [m/s]');
+xlabel('t [hrs]');
+legend(PhaseM4_legend);
+grid(gca,'minor')
+grid on;
+title('Velocity asymmetry and sediment concentration II')
+
+savefig('pt-1-4');
+
+
+% This figure is not needed for the report.
 
 figure
 subplot(2,1,1);
@@ -73,9 +113,17 @@ xlabel('time [s]');
 ylabel('U [m/s]');
 title('Velocity Asymmetry');
 grid on;
+legend();
 
 subplot(2,1,2);
-plot(t(110:265),U(:,110:265));
+plot(t(104:255),U(:,104:255));
 xlabel('time [s]');
 ylabel('U [m/s]');
 grid on;
+legend();
+
+% The highest range of velocities in the above are for values of X close
+% to the seaward end of the basin. At the landward end of the basin, the
+% velocities reach zero.
+% The asymmetry of ebb and flood velocities stays constant across the
+% basin. The overall range simply declines.
