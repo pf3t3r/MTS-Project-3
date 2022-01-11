@@ -43,14 +43,9 @@ wn(1)=2*pi/Td2;         % M2
 wn(2)=2*wn(1);          % M4
 wn(3)=3*wn(1);          % M6
 
-
 % Evaluate velocity asymmetry for different phases
 % PhaseM4=(0:45:180)/180*pi;
 % for i = 1:length(PhaseM4)
-    
-% phaseM4=PhaseM4(i);
-% Maybe this is not correct.
-phaseM4 = 60/180*pi;      % Phase = 60 deg.
 
 T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds. 
 Tend = 10*T;              % Five tidal periods modeled -> for very fine
@@ -60,11 +55,12 @@ deltaT = 300;             % Time step of 5 minutes
 t = 0:deltaT:Tend;
 Nt = length(t);
 
-ampD1 = 0;              % D1 does not need to be prescribed here.
+ampD1 = 0;                % D1 does not need to be prescribed here.
 ampM2 = 1;
 ampM4 = 0.2;
 phaseD1 = 0;
 phaseM2 = 0;
+phaseM4 = 60/180*pi;      % Phase = 60 deg. Might not be correct
 
 % Water level prescribed below as a sine function.
 Z = ampD1*sin(pi*t/T + phaseD1) + ampM2*sin(2*pi*t/T + phaseM2) + ...
@@ -75,63 +71,78 @@ dZdt = ampD1*1*pi/T*cos(pi*t/T + phaseD1) + ...
        ampM2*2*pi/T*cos(2*pi*t/T + phaseM2) + ...
        ampM4*4*pi/T*cos(4*pi*t/T + phaseM4); 
 
-% L = 1e4;                 % We model a simple basin with a length of ten km
-L = Lbasin;
-% dx = 400;                % Grid distance
-dx = deltaX;
-% x = 0:dx:L;              % x-coordinate. Seaward end is at x = L,
-                         % landward end at x=0. 
+L = Lbasin;                % Length of Gironde Estuary
+dx = deltaX;               % Grid spacing
 Nx = length(x);                       
 
-% H = 10-8e-4*x;           % Bottom profile. Linear sloping bottom. 2 m deep
+% Not sure if the following is correct.
+% H = 10-8e-4*x;         % Bottom profile. Linear sloping bottom. 2 m deep
                          % near landward boundary, 10 m deep near inlet. 
 H = depth*ones(1,length(x));
 dHdx(1:Nx) = -8e-4;
 
 %**************************************************************************
-% After a call to hydromodel, flow velocity at each position as a
-% function of time is known
+% Call hydromodel in order to find the flow velocity at each position as a
+% function of time
 %**************************************************************************
 
 U = HydroModel2(t, Z, dZdt, H, dHdx, x, dx);
 
 %**************************************************************************
-% Here the sediment concentrations are calculated for each position in the
+% Then calculate the sediment concentrations for each position in the
 % basin with the Groen model.
+%**************************************************************************
 
 for px = 1:Nx
     [C(px, 1:Nt)] = GroenModel(U(px, 1:Nt), t, deltaT, T, Ws, alpha, Kv);
 end
 
-% Save the value of C and U at the first point in X    
-%     C_phaseM4(i,:) = C(1,:);
+% Save the value of C and U at the first point in X.
+% This code may not be necessary.
 C_x1 = C(1,:);
-%     U_phaseM4(i,:) = U(1,:);
 U_x1 = U(1,:);
 
+% Try the same as above, but for each point in X.
+% No point in doing this since we don't change the array at all.
+% for px = 1:Nx
+%     C_x(px) = C(px,:);
+%     U_x(px) = U(px,:);
+% end
+
 % Determine tidally-averaged sediment transport as a function of position
-% also U coz y not m8
+% (and also tidally-averaged velocity)
 for px = 1:Nx
     C_avg(px) = mean(C(px,:));
     U_avg(px) = mean(U(px,:));
 end
 disp(C_avg)
 
+ for i = 1:Nx
+      C_legend{i} = num2str(x(i)/1000,'x = %.0f km');
+      U_legend{i} = num2str(x(i)/1000,'x = %.0f km');
+ end
+
 figure
 
 subplot(3,1,1)
 yyaxis left
-plot(t/3600,C_x1);
+for i = 1:int16(Nx/10):Nx
+    plot(t/3600,C(i,:));
+    hold on
+end
 ylabel('C [kg/m^2]');
+legend(C_legend(1:int16(Nx/10):Nx));
 yyaxis right
-plot(t/3600,U_x1);
+for i = 1:int16(Nx/10):Nx
+    plot(t/3600,U(i,:));
+end
+legend(U_legend(1:int16(Nx/10):Nx));
 hold off
 ylabel('U [m/s]');
 xlabel('t [hrs]');
-% legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
-title('Velocity and Sediment Concentration at the first location in X')
+title('Velocity and Sediment Concentration as a function of time')
 
 subplot(3,1,2)
 yyaxis left
@@ -141,10 +152,11 @@ yyaxis right
 plot(t(1:300)/3600,U_x1(:,1:300));
 ylabel('U [m/s]');
 xlabel('t [hrs]');
-% legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
-title('First 300 values of U and C at the first point in X')
+legend('C','U');
+% title('U and C as a function of time: first two tidal cycles, at x = %d',x(1));
+title(['U and C as a function of time at x = ',num2str(x(1)),' km, first two tidal cycles'])
 
 subplot(3,1,3)
 yyaxis left
@@ -155,6 +167,9 @@ yyaxis right
 plot(x,C_avg);
 ylabel('C [kg/m^2]');
 hold off
-title('C and U as a function of X');
+grid(gca,'minor')
+grid on;
+legend('U_{avg}','C_{avg}');
+title('Tidally-averaged Sediment Concentration and Velocity VS. basin length');
 
 savefig('pt-3-i');
