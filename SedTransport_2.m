@@ -22,6 +22,9 @@ Tend=10*T;               % Five tidal periods modeled -> for very fine sand and 
 deltaT=300;             % Time step of 5 minutes
 t=0:deltaT:Tend;
 Nt=length(t);
+global wn
+wn(1)=2*pi/T;
+wn(2)=2*wn(1);
 
 %**************************************************************************
 % Prescribed sea surface elevations. It is assumed that d/dx zeta =0. M2
@@ -33,7 +36,7 @@ ampM2=1;
 ampM4=0.2;
 phaseD1=0;
 phaseM2=0;
-%phaseM4=pi/2;
+phaseM4=pi/2;
 
 %sensitivity analysis phase difference
 PhaseM4=(0:90:90)/180*pi;
@@ -262,22 +265,16 @@ end
 meanQs=S_Qs/149; 
 
 Nsteps=floor(T/deltaT);
+
 %Harmonic analysis
 for px=1:Nx-1
-coefin=[0.1, 0.1, 0.1];
-coefout=nlinfit(t,Z(px,:),@harmfit,coefin);
-Z0(px)=coefout(1);
-ZM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
-%ZM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
-phaseZM2(px)=atan(coefout(2)/coefout(3));
-%phaseZM4(i,px)=atan(coefout(3)/coefout(5));
-coefin=[0.1, 0.1, 0.1];
-coefout=nlinfit(t,U,@harmfit,coefin);
+coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
+coefout=nlinfit(t,U(px,:),@harmfit,coefin);
 U0(px)=coefout(1);
 UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
-%UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
+UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
 phaseUM2(px)=atan(coefout(2)/coefout(3));
-%phaseUM4(i,px)=atan(coefout(3)/coefout(5));
+phaseUM4(i,px)=atan(coefout(3)/coefout(5));
 end
 
 Qs_M2=UM2.*C;                                            % Qs is sediment flux
