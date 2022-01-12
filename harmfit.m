@@ -1,6 +1,6 @@
 function [testfunction]=harmfit(coefin,t)
 
-% [output]=harmfit(coefin, t)
+% [output]=harmfit(coefin,t)
 % coefin are the estimated amplitudes and phases of the constituents
 % coefin(1)=mean
 % coefin(2:Nharm+1) is Cn, Nharm the number of harmonics 

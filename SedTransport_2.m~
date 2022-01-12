@@ -36,7 +36,7 @@ ampM2=1;
 ampM4=0.2;
 phaseD1=0;
 phaseM2=0;
-phaseM4=pi/2;
+%phaseM4=pi/2;
 
 %sensitivity analysis phase difference
 PhaseM4=(0:90:90)/180*pi;
@@ -265,11 +265,17 @@ end
 meanQs=S_Qs/149; 
 
 Nsteps=floor(T/deltaT);
-
 %Harmonic analysis
 for px=1:Nx-1
 coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
-coefout=nlinfit(t,U(px,:),@harmfit,coefin);
+coefout=nlinfit(t,Z(1,:),@harmfit,coefin);
+Z0(px)=coefout(1);
+ZM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
+ZM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
+phaseZM2(px)=atan(coefout(2)/coefout(3));
+phaseZM4(i,px)=atan(coefout(3)/coefout(5));
+coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
+coefout=nlinfit(t,U(1,:),@harmfit,coefin);
 U0(px)=coefout(1);
 UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
 UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
