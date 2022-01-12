@@ -72,7 +72,7 @@ while tt(k)<Tend
     D(k+1) = (Ws.^2./Kv) * C(k+1);
     Qs(k+1) = Uf(k+1).*C(k+1);
     %A(k+1) = gradient(Qs(k+1),deltaT,dx);
-     A(k+1) = dQsdx(k+1);
+    A(k+1) = dQsdx(k+1);
     
     % New C will be caused by difference betwen erosion and deposition
     C(k+1) = C(k) + (E(k) + E(k+1) - D(k) - D(k+1) - A(k) - A(k+1)) * (deltaT(k)*0.5);
@@ -81,7 +81,6 @@ while tt(k)<Tend
     % End of corrector step
     
     k=k+1;
-    
 end
 
 Conc=interp1(tt,C,t);           % Since we have calculated the solution on a new time vector, we have to interpolate the solution to the right time vector. 

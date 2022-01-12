@@ -167,19 +167,19 @@ Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1;
 % display(DIFF_S);
 DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
 
-%Difference between sediment concentration at flood and ebb
+%Difference between sediment transport at flood and ebb
 DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
 end
 
 %% 2.1.b 
-Ws=1e-3;                % Fall velocity of sediment
+%Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
-% Sensitivity analysis Ws
-%WS=linspace(0.5e-3,2e-2,5);
-%for i=1:5
-    %Ws=WS(i);
+%Sensitivity analysis Ws
+WS=linspace(0.5e-3,2e-2,5);
+for i=1:1
+    Ws=0.0054;
 
 %**************************************************************************
 %           Define time domain
@@ -190,6 +190,9 @@ Tend=10*T;               % Five tidal periods modeled -> for very fine sand and 
 deltaT=300;             % Time step of 5 minutes
 t=0:deltaT:Tend;
 Nt=length(t);
+global wn
+wn(1)=2*pi/T;
+wn(2)=2*wn(1);
 
 %**************************************************************************
 % Prescribed sea surface elevations. It is assumed that d/dx zeta =0. M2
@@ -198,11 +201,12 @@ Nt=length(t);
 %**************************************************************************
 ampD1=0;            % in part 1 and 2 D1=0. Depending on your estuary, you might want to prescribe D1 for part 3. 
 ampM2=1;
-ampM4=0.2;
+%Remove amplitude of M4
+ampM4=0;
 phaseD1=0;
 phaseM2=0;
 phaseM4=0;
-    
+
 Z=ampD1*sin(pi*t/T + phaseD1)+ampM2*sin(2*pi*t/T + phaseM2)+ampM4*sin(4*pi*t/T + phaseM4);          % Waterlevel prescribed as sine function. 
 dZdt=ampD1*1*pi/T*cos(pi*t/T+ phaseD1)+ampM2*2*pi/T*cos(2*pi*t/T+ phaseM2)+ampM4*4*pi/T*cos(4*pi*t/T + phaseM4); % Flow velocity will behave as a cosine function. 
 
@@ -267,26 +271,29 @@ meanQs=S_Qs/149;
 Nsteps=floor(T/deltaT);
 
 %Harmonic analysis
-for px=1:Nx-1
+for px=1:Nx
 coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
 coefout=nlinfit(t,U(px,:),@harmfit,coefin);
 U0(px)=coefout(1);
 UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
-UM4(i,px)=sqrt(coefout(3).^2+coefout(5).^2);
+UM4(px)=sqrt(coefout(3).^2+coefout(5).^2);
 phaseUM2(px)=atan(coefout(2)/coefout(3));
-phaseUM4(i,px)=atan(coefout(3)/coefout(5));
+phaseUM4(px)=atan(coefout(3)/coefout(5));
 end
 
+if i==1
+UM2=UM2';
+end
 Qs_M2=UM2.*C;                                            % Qs is sediment flux
 
-% calculate tidally averaged sediment transport (only averaging over last tidal cycle)
+% calculate tidally averaged sediment transport for M2 signal (only averaging over last tidal cycle)
 S_Qs_M2=0;
 for time=1342:1491
-    S_Qs_M2=S_Qs_M2+Qs-M2(time);
+    S_Qs_M2=S_Qs_M2+Qs_M2(time);
 end
 
 % tidally averaged sediment transport
-meanQs_M2=S_Qs_M2/149;           
+meanQs_M2=S_Qs_M2/149;    
 %**************************************************
 
 
@@ -305,6 +312,41 @@ meanQs_M2=S_Qs_M2/149;
 for px=1:Nx
     [C2(px,1:Nt)]=CModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv, dQsdx(px,1:Nt));
 end
-% 
+
+%Sediment transport with advection
 Qs2=U.*C2;
-% 
+
+% calculate tidally averaged sediment transport with advection (only averaging over last tidal cycle)
+S_Qs2=0;
+for time=1342:1491
+    S_Qs2=S_Qs2+Qs2(time);
+end
+
+% tidally averaged sediment transport
+meanQs2=S_Qs2/149;
+
+%Sediment transport with advection without M4
+Qs2_M2=UM2.*C2;  
+
+% calculate tidally averaged sediment transport for M2 signal (only averaging over last tidal cycle)
+S_Qs2_M2=0;
+for time=1342:1491
+    S_Qs2_M2=S_Qs2_M2+Qs2_M2(time);
+end
+
+% tidally averaged sediment transport
+meanQs2_M2=S_Qs2_M2/149; 
+
+% Calculate the variation in tidally averaged sediment transport with and
+% without M4 signal for the model with advection and the model without
+% advection. 
+
+DIFF_Qs_M4=meanQs-meanQs_M2
+DIFF_Qs2_M4=meanQs2-meanQs2_M2
+
+% Save DIFF_Qs_M4 and DIFF_Qs2_M4 for each value of WS.    
+DIFF_Qs_M4(i) = DIFF_Qs_M4;
+DIFF_Qs2_M4(i) = DIFF_Qs2_M4;
+end
+
+
