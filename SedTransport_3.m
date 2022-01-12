@@ -37,15 +37,6 @@ deltaT = 200;            % Time step [s]. Must satisfy Courant condition.
 % time = 0:deltaT:30*Td2;  % Time [s] --> already defined below!!
 % Nt = length(time);       % Size of time array
 
-% Define frequencies to be analysed. M1 tide is not included.
-global wn
-wn(1)=2*pi/Td2;         % M2
-wn(2)=2*wn(1);          % M4
-wn(3)=3*wn(1);          % M6
-
-% I am not even using wn yet. LOL.
-% OK. Let's add that stuff below.
-
 T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds. 
 Tend = 10*T;              % Five tidal periods modeled -> for very fine
                           % sand and large erosion constants more tidal
@@ -202,29 +193,40 @@ savefig('pt-3-ii');
 % on mean flow and tidal asymmetry. We still need to find the following.
 
 %% Relationship of tidally-averaged sediment transport to magnitude of tidal flows
+% this is the individual components
 
 %% Relationship of tidally-averaged sediment transport to generation of higher harmonics
-% for px=1:Nx-1
-%     coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
-%     coefout=nlinfit(t(1:end),Z(1:end),@harmfit,coefin);
-%     Z0(px)=coefout(1);
-%     ZM2(px)=sqrt(coefout(2).^2+coefout(5).^2);
-%     ZM4(i,px)=sqrt(coefout(3).^2+coefout(6).^2);
-%     ZM6(i,px)=sqrt(coefout(4).^2+coefout(7).^2);
-%     phaseZM2(i,px)=atan(coefout(2)/coefout(5));
-%     phaseZM4(i,px)=atan(coefout(3)/coefout(6));
-%     phaseZM6(i,px)=atan(coefout(4)/coefout(7));
-%     % coefin=[0.1, 0.3, 1, 0.2, 0.1, 0.2, 1, 0.2, 0.1];
-%     coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
-%     coefout=nlinfit(t(end-Nsteps:end),U(px,end-Nsteps:end),@harmfit,coefin);
+
+% Define frequencies to be analysed. M1 tide is not included.
+global wn
+wn(1)=2*pi/Td2;         % M2
+wn(2)=2*wn(1);          % M4
+wn(3)=3*wn(1);          % M6
+
+% I am not even using wn yet. LOL.
+% OK. Let's add that stuff below.
+
+for px=1:Nx-1
+    coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
+    coefout=nlinfit(t(1:end),Z(1:end),@harmfit,coefin);
+    Z0(px)=coefout(1);
+    ZM2(px)=sqrt(coefout(2).^2+coefout(5).^2);
+    ZM4(px)=sqrt(coefout(3).^2+coefout(6).^2);
+    ZM6(px)=sqrt(coefout(4).^2+coefout(7).^2);
+    phaseZM2(px)=atan(coefout(2)/coefout(5));
+    phaseZM4(px)=atan(coefout(3)/coefout(6));
+    phaseZM6(px)=atan(coefout(4)/coefout(7));
+    % coefin=[0.1, 0.3, 1, 0.2, 0.1, 0.2, 1, 0.2, 0.1];
+    coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
+    coefout=nlinfit(t(1:end),U(px,1:end),@harmfit,coefin);
 %     U0(px)=coefout(1);
-%     UM2(i,px)=sqrt(coefout(2).^2+coefout(5).^2);
-%     UM4(i,px)=sqrt(coefout(3).^2+coefout(6).^2);
-%     UM6(i,px)=sqrt(coefout(4).^2+coefout(7).^2);
-%     phaseUM2(i,px)=atan(coefout(2)/coefout(5));
-%     phaseUM4(i,px)=atan(coefout(3)/coefout(6));
-%     phaseUM6(i,px)=atan(coefout(4)/coefout(7));
-% end
+%     UM2(px)=sqrt(coefout(2).^2+coefout(5).^2);
+%     UM4(px)=sqrt(coefout(3).^2+coefout(6).^2);
+%     UM6(px)=sqrt(coefout(4).^2+coefout(7).^2);
+%     phaseUM2(px)=atan(coefout(2)/coefout(5));
+%     phaseUM4(px)=atan(coefout(3)/coefout(6));
+%     phaseUM6(px)=atan(coefout(4)/coefout(7));
+end
 
 %% Relationship of tidally-averaged sediment transport to the phase difference between M2 and M4 flow velocities
 
