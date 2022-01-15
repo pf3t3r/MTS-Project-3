@@ -67,8 +67,6 @@ if courant>=1
     disp('Courant criterion not met');
 end 
 
-
-
 % Water level prescribed below as a sine function.
 Z = ampD1*sin(pi*t/T + phaseD1) + ampM2*sin(2*pi*t/T + phaseM2) + ...
     ampM4*sin(4*pi*t/T + phaseM4);   
@@ -88,70 +86,69 @@ Nx = length(x);
 H = H0*ones(1,length(x));
 dHdx(1:Nx) = -8e-4;
 
-%**************************************************************************
-% Call hydromodel in order to find the flow velocity at each position as a
-% function of time
-%**************************************************************************
-
+%% Find the flow velocity as a function of time
 U = HydroModel2(t, Z, dZdt, H, dHdx, x, dx);
 
-%**************************************************************************
-% Then calculate the sediment concentrations for each position in the
-% basin with the Groen model.
-%**************************************************************************
-
+%% Find the sediment concentration
 for px = 1:Nx
     [C(px, 1:Nt)] = GroenModel(U(px, 1:Nt), t, deltaT, T, Ws, alpha, Kv);
 end
 
-Qs=U.*C;                                            % Qs is sediment flux
+%% Find the sediment transport
 
-Nsteps=T/deltaT;                                    % Nr of timestepf in one tidal cycle.
+% First find the sediment flux Qs ...
+Qs = U.*C;
 
-% calculate tidally averaged sediment transport (only averaging over last tidal cycle)
-S_Qs=0;
-for time=2013:2236
-    S_Qs=S_Qs+Qs(time);
+% Nsteps = T/deltaT;      % No. of timesteps in a tidal cycle.
+
+% ... then calculate the tidally-averaged sediment transport (averaged
+% over the last tidal cycle)
+S_Qs = 0;
+for time = 2013:2236
+    S_Qs = S_Qs + Qs(time);
 end
+meanQs = S_Qs/223; 
 
-% tidally averaged sediment transport
-meanQs=S_Qs/223; 
-
-% calculate tidally averaged sediment transport as a function of position in the estuary (only averaging over last tidal cycle)
-Qs_x=[];
-for position=1:81
-Qs_t(position)=0;
-for time=2013:2236
-    Qs_t(position)=Qs_t(position)+Qs(position,time);
+% Calculate tidally averaged sediment transport as a function of position in the estuary (only averaging over last tidal cycle)
+Qs_x = [];
+for position = 1:81
+    Qs_t(position)=0;
+for time = 2013:2236
+    Qs_t(position) = Qs_t(position) + Qs(position,time);
 end
-%tidally averaged sediment transport
-meanQs_x=Qs_t(position)/223;   
-Qs_x=[Qs_x meanQs_x];
+% Tidally-averaged sediment transport
+meanQs_x = Qs_t(position)/223;   
+Qs_x = [Qs_x meanQs_x];
 end
 %**************************************************
 
-%Plot of tidally averaged sediment transport as a funcion of position in
-%the estuary 
+% Plot tidally-averaged sediment transport as a funcion of position in
+% the estuary 
 figure
-ylabel('Flux [kg/(m*s)]');
-plot(x,Qs_x)
-xlabel('x [m]');
-title('Tidally averaged sediment transport as a function of position in the estuary')
+plot(x/1000,Qs_x);
+xlabel('x [km]');
+ylabel('Flux [kg m^{-1} s^{-1}]');
+grid(gca,'minor');
+grid on;
+title('Tidally-averaged sediment transport as a function of position in the estuary')
 savefig('Matlab3_3_i');
-%% Determine tidally-averaged sediment transport as a function of position
-% (and also tidally-averaged velocity)
+
+
+
+%% Tidally-averaged sediment concentration as a function of position
+% (and also tidally-averaged velocity) - may not be necessary
 for px = 1:Nx
     C_avg(px) = mean(C(px,:));
     U_avg(px) = mean(U(px,:));
 end
 
 % Comment the following to suppress ouput
-disp('C_avg: ')
-disp(C_avg)
+% disp('C_avg: ')
+% disp(C_avg)
 
 % Create a legend
  for i = 1:Nx
-      C_legend{i} = num2str(x(i)/1000,'x = %.0f km');
+      Qs_legend{i} = num2str(x(i)/1000,'x = %.0f km');
       U_legend{i} = num2str(x(i)/1000,'x = %.0f km');
  end
 
@@ -166,11 +163,12 @@ figure
 subplot(2,1,1)
 yyaxis left
 for i = 1:int16(Nx/xlocs):Nx
-    plot(t/3600,C(i,:));
+    % plot(t/3600,C(i,:));
+    plot(t/3600,Qs(i,:));
     hold on
 end
-ylabel('C [kg/m^2]');
-legend(C_legend(1:int16(Nx/xlocs):Nx));
+ylabel('Q_s [kg m^{-1} s^{-1}]');
+legend(Qs_legend(1:int16(Nx/xlocs):Nx));
 yyaxis right
 for i = 1:int16(Nx/xlocs):Nx
     plot(t/3600,U(i,:));
@@ -181,15 +179,15 @@ ylabel('U [m/s]');
 xlabel('t [hrs]');
 grid(gca,'minor')
 grid on;
-title('U, C vs. t')
+title('U, Q_s vs. t')
 
 subplot(2,1,2)
 yyaxis left
 for i = 1:int16(Nx/xlocs):Nx
-    plot(t(1:500)/3600,C(i,1:500));
+    plot(t(1:500)/3600,Qs(i,1:500));
     hold on
 end
-ylabel('C [kg/m^2]');
+ylabel('Q_s [kg m^{-1} s^{-1}]');
 yyaxis right
 for i = 1:int16(Nx/xlocs):Nx
     plot(t(1:500)/3600,U(i,1:500));
@@ -200,28 +198,28 @@ xlabel('t [hrs]');
 grid(gca,'minor')
 grid on;
 legend(U_legend(1:int16(Nx/xlocs):Nx));
-title('U, C vs. t: first two tidal cycles');
+title('U, Q_s vs. t: first two tidal cycles');
 
-savefig('pt-3-i');
+savefig('Matlab3_3_ii');
 
+% The following is incorrect. Delete this later.
 % (Tidally-averaged) Sediment Concentration & Velocity VS. Basin Length
-
-figure
-yyaxis left
-plot(x/1000,U_avg*1000);
-ylabel('U [mm/s]');
-hold on
-yyaxis right
-plot(x/1000,C_avg);
-ylabel('C [kg/m^2]');
-hold off
-grid(gca,'minor')
-grid on;
-xlabel('Estuary Length [km]');
-legend('U_{avg}','C_{avg}');
-title('Tidally-averaged U, C vs. X');
-
-savefig('pt-3-ii');
+% figure
+% yyaxis left
+% plot(x/1000,U_avg*1000);
+% ylabel('U [mm/s]');
+% hold on
+% yyaxis right
+% plot(x/1000,C_avg);
+% ylabel('C [kg/m^2]');
+% hold off
+% grid(gca,'minor')
+% grid on;
+% xlabel('Estuary Length [km]');
+% legend('U_{avg}','C_{avg}');
+% title('Tidally-averaged U, C vs. X');
+% 
+% savefig('pt-3-ii');
 
 % The above shows the dependence of the tidally-averaged sediment transport
 % on mean flow and tidal asymmetry. We still need to find the following.
