@@ -37,7 +37,7 @@ deltaT = 200;            % Time step [s]. Must satisfy Courant condition.
 % time = 0:deltaT:30*Td2;  % Time [s] --> already defined below!!
 % Nt = length(time);       % Size of time array
 
-T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds. 
+T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds (same at Td2)
 Tend = 10*T;              % Five tidal periods modeled -> for very fine
                           % sand and large erosion constants more tidal
                           % periods need to be solved
@@ -104,7 +104,41 @@ for px = 1:Nx
     [C(px, 1:Nt)] = GroenModel(U(px, 1:Nt), t, deltaT, T, Ws, alpha, Kv);
 end
 
-% Determine tidally-averaged sediment transport as a function of position
+Qs=U.*C;                                            % Qs is sediment flux
+
+Nsteps=T/deltaT;                                    % Nr of timestepf in one tidal cycle.
+
+% calculate tidally averaged sediment transport (only averaging over last tidal cycle)
+S_Qs=0;
+for time=2013:2236
+    S_Qs=S_Qs+Qs(time);
+end
+
+% tidally averaged sediment transport
+meanQs=S_Qs/223; 
+
+% calculate tidally averaged sediment transport as a function of position in the estuary (only averaging over last tidal cycle)
+Qs_x=[];
+for position=1:81
+Qs_t(position)=0;
+for time=2013:2236
+    Qs_t(position)=Qs_t(position)+Qs(position,time);
+end
+%tidally averaged sediment transport
+meanQs_x=Qs_t(position)/223;   
+Qs_x=[Qs_x meanQs_x];
+end
+%**************************************************
+
+%Plot of tidally averaged sediment transport as a funcion of position in
+%the estuary 
+figure
+ylabel('Flux [kg/(m*s)]');
+plot(x,Qs_x)
+xlabel('x [m]');
+title('Tidally averaged sediment transport as a function of position in the estuary')
+savefig('Matlab3_3_i');
+%% Determine tidally-averaged sediment transport as a function of position
 % (and also tidally-averaged velocity)
 for px = 1:Nx
     C_avg(px) = mean(C(px,:));

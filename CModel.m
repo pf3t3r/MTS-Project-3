@@ -20,7 +20,7 @@ C(1)=0.0;
 %A(1) = dQsdx(1491);
 A(1) = dQsdx(1); %advection at start of calculations from GroenModel
 
-while tt(k)<Tend  
+while tt(k)<Tend 
     %************************************************
     
     % Predictor step
@@ -30,7 +30,7 @@ while tt(k)<Tend
     deltaT(k) = deltaTfix;
     E(k) = alpha * Uf(k).^2;
     D(k) = (Ws.^2 ./ Kv) * C(k);
-    Qs(k) = Uf(k).*C(k);
+    %Qs(k) = Uf(k).*C(k);
     %dx = 400;
     %A(k) = gradient(Qs(k),deltaT,dx);
     A(k) = dQsdx(k);
@@ -62,20 +62,19 @@ while tt(k)<Tend
    
     % Go one step further. Update time and k.
     tt(k+1)=tt(k)+deltaT(k);
-    
     %*****************************************************************
     % Corrector step. 
     
     % Define variables 
-    Uf(k+1)=interp1(t,U,tt(k+1));
-    E(k+1) = alpha * Uf(k+1).^2;
-    D(k+1) = (Ws.^2./Kv) * C(k+1);
-    Qs(k+1) = Uf(k+1).*C(k+1);
+%     Uf(k+1)=interp1(t,U,tt(k+1));
+%     E(k+1) = alpha * Uf(k+1).^2;
+%     D(k+1) = (Ws.^2./Kv) * C(k+1);
+    %Qs(k+1) = Uf(k+1).*C(k+1);
     %A(k+1) = gradient(Qs(k+1),deltaT,dx);
-    A(k+1) = dQsdx(k+1);
+%     A(k+1) = dQsdx(k+1);
     
     % New C will be caused by difference betwen erosion and deposition
-    C(k+1) = C(k) + (E(k) + E(k+1) - D(k) - D(k+1) - A(k) - A(k+1)) * (deltaT(k)*0.5);
+%     C(k+1) = C(k) + (E(k) + E(k+1) - D(k) - D(k+1) - A(k) - - A(k+1)) * (deltaT(k)*0.5);
     
     %******************************************************************
     % End of corrector step
