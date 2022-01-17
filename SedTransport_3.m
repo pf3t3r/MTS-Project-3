@@ -111,27 +111,39 @@ meanQs = S_Qs/223;
 
 % Calculate tidally averaged sediment transport as a function of position in the estuary (only averaging over last tidal cycle)
 Qs_x = [];
+U_x = [];
 for position = 1:81
     Qs_t(position)=0;
+    U_t(position)=0;
 for time = 2013:2236
     Qs_t(position) = Qs_t(position) + Qs(position,time);
+    U_t(position) = U_t(position) + U(position,time);
 end
 % Tidally-averaged sediment transport
 meanQs_x = Qs_t(position)/223;   
 Qs_x = [Qs_x meanQs_x];
+
+meanU_x = U_t(position)/223;
+U_x = [U_x meanU_x];
 end
 %**************************************************
 
-% Plot tidally-averaged sediment transport as a funcion of position in
-% the estuary 
-figure
-plot(x/1000,Qs_x);
-xlabel('x [km]');
-ylabel('Flux [kg m^{-1} s^{-1}]');
-grid(gca,'minor');
-grid on;
-title('Tidally-averaged sediment transport as a function of position in the estuary')
-savefig('Matlab3_3_i');
+% % Plot tidally-averaged sediment transport as a funcion of position in
+% % the estuary 
+% figure
+% yyaxis left;
+% plot(x/1000,Qs_x);
+% hold on
+% ylabel('Flux [kg m^{-1} s^{-1}]');
+% yyaxis right;
+% plot(x/1000,U_x);
+% hold off;
+% xlabel('x [km]');
+% ylabel('U [m/s]');
+% grid(gca,'minor');
+% grid on;
+% title('Tidally-averaged sediment transport as a function of position in the estuary')
+% savefig('Matlab3_3_i');
 
 
 
@@ -202,6 +214,36 @@ title('U, Q_s vs. t: first two tidal cycles');
 
 savefig('Matlab3_3_ii');
 
+
+
+
+% Plot tidally-averaged sediment transport as a funcion of position in
+% the estuary 
+figure
+yyaxis left;
+plot(x/1000,Qs_x);
+hold on
+ylabel('Flux [kg m^{-1} s^{-1}]');
+yyaxis right;
+% plot(x/1000,U_x);
+plot(x/1000,U_avg);
+% plot(x/1000,C_avg);
+hold off;
+xlabel('x [km]');
+ylabel('U [m/s]');
+grid(gca,'minor');
+grid on;
+title('Tidally-averaged sediment transport as a function of position in the estuary')
+savefig('Matlab3_3_i');
+
+figure
+plot(U_avg,Qs_x);
+xlabel('U [m/s]');
+ylabel('Qs [kg m^{-1} s^{-1}]');
+title('Qs vs U');
+
+
+
 % The following is incorrect. Delete this later.
 % (Tidally-averaged) Sediment Concentration & Velocity VS. Basin Length
 % figure
@@ -225,43 +267,54 @@ savefig('Matlab3_3_ii');
 % on mean flow and tidal asymmetry. We still need to find the following.
 
 %% Relationship of tidally-averaged sediment transport to magnitude of tidal flows
-% this is the individual components
-
-%% Relationship of tidally-averaged sediment transport to generation of higher harmonics
+% So this refers to the individual components UM2, UM4. So we must plot
+% Q vs. UM2
+% Q vs. UM4
 
 % Define frequencies to be analysed. M1 tide is not included.
+% wn is used by the harmfit function.
 global wn
 wn(1)=2*pi/Td2;         % M2
 wn(2)=2*wn(1);          % M4
 wn(3)=3*wn(1);          % M6
 
-% I am not even using wn yet. LOL.
-% OK. Let's add that stuff below.
-
-for px=1:Nx-1
-    coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
-    coefout=nlinfit(t(1:end),Z(1:end),@harmfit,coefin);
-    Z0(px)=coefout(1);
-    ZM2(px)=sqrt(coefout(2).^2+coefout(5).^2);
-    ZM4(px)=sqrt(coefout(3).^2+coefout(6).^2);
-    ZM6(px)=sqrt(coefout(4).^2+coefout(7).^2);
-    phaseZM2(px)=atan(coefout(2)/coefout(5));
-    phaseZM4(px)=atan(coefout(3)/coefout(6));
-    phaseZM6(px)=atan(coefout(4)/coefout(7));
-    % coefin=[0.1, 0.3, 1, 0.2, 0.1, 0.2, 1, 0.2, 0.1];
-    coefin=[0.1, 1, 0.2, 0.1, 1, 0.2, 0.1];
-    coefout=nlinfit(t(1:end),U(px,1:end),@harmfit,coefin);
-%     U0(px)=coefout(1);
-%     UM2(px)=sqrt(coefout(2).^2+coefout(5).^2);
-%     UM4(px)=sqrt(coefout(3).^2+coefout(6).^2);
-%     UM6(px)=sqrt(coefout(4).^2+coefout(7).^2);
-%     phaseUM2(px)=atan(coefout(2)/coefout(5));
-%     phaseUM4(px)=atan(coefout(3)/coefout(6));
-%     phaseUM6(px)=atan(coefout(4)/coefout(7));
+%Harmonic analysis
+for px = 1:Nx
+    coefin =[0.1, 0.1, 0.1, 0.1, 0.1];
+    coefout = nlinfit(t, U(px,:), @harmfit, coefin);
+    U0(px) = coefout(1);
+    UM2(px) = sqrt(coefout(2).^2 + coefout(3).^2);
+    UM4(px) = sqrt(coefout(3).^2 + coefout(5).^2);
+    phaseUM2(px) = atan(coefout(2)/coefout(3));
+    phaseUM4(px) = atan(coefout(3)/coefout(5));
 end
+
+figure
+plot(UM2, Qs_x);
+hold on
+plot(UM4, Qs_x);
+hold off
+xlabel('U');
+ylabel('Qs');
+legend('U_{M2}','U_{M4}');
+grid on;
+title('Sediment transport vs. velocity of tidal component');
+
+
+%% Relationship of tidally-averaged sediment transport to generation of higher harmonics
+
+
 
 %% Relationship of tidally-averaged sediment transport to the phase difference between M2 and M4 flow velocities
 
+phaseDiff = 2*phaseUM2 - phaseUM4;
+
+figure
+plot(phaseDiff, Qs_x);
+xlabel('2*\Phi_{UM2} - \Phi_{UM4}');
+ylabel('Sediment Transport');
+title('Sediment transport vs. Phase Difference');
+grid on;
 
 %% Answers to Part 3.
 % Figure 1. The mean flow appears to entrain significant amounts of sediment.
