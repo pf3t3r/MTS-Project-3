@@ -42,7 +42,7 @@ t = 0:deltaT:Tend;
 Nt = length(t);
 
 ampD1 = 0;               % D1 does not need to be prescribed here.
-ampM2 = 1;
+ampM2 = 1.5481;
 ampM4 = 0.2;
 phaseD1 = 0;
 phaseM2 = 0;

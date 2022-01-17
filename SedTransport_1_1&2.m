@@ -115,7 +115,7 @@ figure
 plot(WS,abs(DIFF_ws))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying fall velocities (W_s)');
 xlabel('W_{s} [m/s]');
-ylabel('Concentration [kg/m^2]');
+ylabel('Time [s]');
 grid on;
 savefig('Matlab3_1_i');
 
@@ -217,7 +217,7 @@ figure
 plot(KV,abs(DIFF_kv))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying eddy diffusivities (K_v)');
 xlabel('K_{v} [m^{2}/s]');
-ylabel('Concentration [kg/m^2]');
+ylabel('Time [s]');
 grid on;
 savefig('Matlab3_1_ii');
 
