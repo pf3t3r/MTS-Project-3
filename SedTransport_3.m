@@ -34,34 +34,30 @@ x=0:deltaX:Lbasin;       % With deltax = c.1.3e3, we have 80 grid points.
 % Water levels forced with D2 tide only
 Td2 = 12*3600 + 25*60;   % M2 tidal period [s]
 deltaT = 200;            % Time step [s]. Must satisfy Courant condition.
-% time = 0:deltaT:30*Td2;  % Time [s] --> already defined below!!
-% Nt = length(time);       % Size of time array
-
-T = (12*60+25)*60;        % M2 and M4 tide. Time in seconds (same at Td2)
-Tend = 10*T;              % Five tidal periods modeled -> for very fine
-                          % sand and large erosion constants more tidal
-                          % periods need to be solved
-% deltaT = 300;             % Time step of 5 minutes -- already defined!!!
+T = (12*60+25)*60;       % M2 and M4 tide. Time in seconds (same at Td2)
+Tend = 10*T;             % Five tidal periods modeled -> for very fine
+                         % sand and large erosion constants more tidal
+                         % periods need to be solved
 t = 0:deltaT:Tend;
 Nt = length(t);
 
-ampD1 = 0;                % D1 does not need to be prescribed here.
+ampD1 = 0;               % D1 does not need to be prescribed here.
 ampM2 = 1;
 ampM4 = 0.2;
 phaseD1 = 0;
 phaseM2 = 0;
-phaseM4 = 60/180*pi;      % Phase = 60 deg. Might not be correct
+phaseM4 = 60/180*pi;     % Phase = 60 deg. Might not be correct
 
-% Check if parameterisation obeys Courant 
+% Check if parameterisation obeys the Courant criterion
 courant = sqrt(9.8*max(H0))*deltaT/deltaX;
 
-if courant<1
+if courant < 1
     D1 = ['Courant no. = ', num2str(courant)];
     disp(D1);
     disp('Courant criterion has been met');
 end 
 
-if courant>=1
+if courant >= 1
     D2 = ['Courant no. = ', num2str(courant)];
     disp(D2);
     disp('Courant criterion not met');
@@ -80,26 +76,26 @@ L = Lbasin;                % Length of Gironde Estuary
 dx = deltaX;               % Grid spacing
 Nx = length(x);                       
 
-% Not sure if the following is correct.
-% H = 10-8e-4*x;         % Bottom profile. Linear sloping bottom. 2 m deep
-                         % near landward boundary, 10 m deep near inlet. 
+% Assign depth based on equilibrium depth                         
 H = H0*ones(1,length(x));
-dHdx(1:Nx) = -8e-4;
 
-%% Find the flow velocity as a function of time
+% Change in depth
+dHdx(1:Nx) = -8e-4;
+% Alternative depth formulation for a linearly-sloping bottom.
+% H = 10 + dHdx(1)*x; 
+
+%% Find the flow velocity for all t, x
 U = HydroModel2(t, Z, dZdt, H, dHdx, x, dx);
 
-%% Find the sediment concentration
+%% Find the sediment concentration for all t, x
 for px = 1:Nx
     [C(px, 1:Nt)] = GroenModel(U(px, 1:Nt), t, deltaT, T, Ws, alpha, Kv);
 end
 
-%% Find the sediment transport
+%% Find the sediment transport for all t, x
 
 % First find the sediment flux Qs ...
 Qs = U.*C;
-
-% Nsteps = T/deltaT;      % No. of timesteps in a tidal cycle.
 
 % ... then calculate the tidally-averaged sediment transport (averaged
 % over the last tidal cycle)
@@ -109,7 +105,9 @@ for time = 2013:2236
 end
 meanQs = S_Qs/223; 
 
-% Calculate tidally averaged sediment transport as a function of position in the estuary (only averaging over last tidal cycle)
+% Calculate tidally averaged sediment transport as a function of position
+% in the estuary (only averaging over last tidal cycle)
+
 Qs_x = [];
 U_x = [];
 for position = 1:81
@@ -126,37 +124,13 @@ Qs_x = [Qs_x meanQs_x];
 meanU_x = U_t(position)/223;
 U_x = [U_x meanU_x];
 end
-%**************************************************
 
-% % Plot tidally-averaged sediment transport as a funcion of position in
-% % the estuary 
-% figure
-% yyaxis left;
-% plot(x/1000,Qs_x);
-% hold on
-% ylabel('Flux [kg m^{-1} s^{-1}]');
-% yyaxis right;
-% plot(x/1000,U_x);
-% hold off;
-% xlabel('x [km]');
-% ylabel('U [m/s]');
-% grid(gca,'minor');
-% grid on;
-% title('Tidally-averaged sediment transport as a function of position in the estuary')
-% savefig('Matlab3_3_i');
-
-
-
-%% Tidally-averaged sediment concentration as a function of position
-% (and also tidally-averaged velocity) - may not be necessary
 for px = 1:Nx
     C_avg(px) = mean(C(px,:));
     U_avg(px) = mean(U(px,:));
 end
 
-% Comment the following to suppress ouput
-% disp('C_avg: ')
-% disp(C_avg)
+%% Tidally-averaged sediment concentration, flow velocity vs. x, t
 
 % Create a legend
  for i = 1:Nx
@@ -169,7 +143,7 @@ end
 % that is automatically drawn has circles and looks like shit.
 xlocs = 3;
 
-% Sediment Concentration & Velocity VS. Time
+% 1. Sediment Concentration & Velocity VS. Time
 figure
 
 subplot(2,1,1)
@@ -212,59 +186,29 @@ grid on;
 legend(U_legend(1:int16(Nx/xlocs):Nx));
 title('U, Q_s vs. t: first two tidal cycles');
 
-savefig('Matlab3_3_ii');
+savefig('Matlab3_3_i');
 
 
+% 2. Tidally-averaged sediment transport and velocity vs. position.
 
-
-% Plot tidally-averaged sediment transport as a funcion of position in
-% the estuary 
 figure
+
 yyaxis left;
 plot(x/1000,Qs_x);
 hold on
 ylabel('Flux [kg m^{-1} s^{-1}]');
 yyaxis right;
 % plot(x/1000,U_x);
-plot(x/1000,U_avg);
+plot(x/1000,U_avg*1000);
 % plot(x/1000,C_avg);
 hold off;
 xlabel('x [km]');
-ylabel('U [m/s]');
+ylabel('U [mm/s]');
 grid(gca,'minor');
 grid on;
 title('Tidally-averaged sediment transport as a function of position in the estuary')
-savefig('Matlab3_3_i');
+savefig('Matlab3_3_ii');
 
-figure
-plot(U_avg,Qs_x);
-xlabel('U [m/s]');
-ylabel('Qs [kg m^{-1} s^{-1}]');
-title('Qs vs U');
-
-
-
-% The following is incorrect. Delete this later.
-% (Tidally-averaged) Sediment Concentration & Velocity VS. Basin Length
-% figure
-% yyaxis left
-% plot(x/1000,U_avg*1000);
-% ylabel('U [mm/s]');
-% hold on
-% yyaxis right
-% plot(x/1000,C_avg);
-% ylabel('C [kg/m^2]');
-% hold off
-% grid(gca,'minor')
-% grid on;
-% xlabel('Estuary Length [km]');
-% legend('U_{avg}','C_{avg}');
-% title('Tidally-averaged U, C vs. X');
-% 
-% savefig('pt-3-ii');
-
-% The above shows the dependence of the tidally-averaged sediment transport
-% on mean flow and tidal asymmetry. We still need to find the following.
 
 %% Relationship of tidally-averaged sediment transport to magnitude of tidal flows
 % So this refers to the individual components UM2, UM4. So we must plot
@@ -289,21 +233,31 @@ for px = 1:Nx
     phaseUM4(px) = atan(coefout(3)/coefout(5));
 end
 
+% 1. Tidally-averaged sediment transport vs. mean flow.
+figure
+
+plot(U_avg*1000,Qs_x);
+xlabel('U [mm/s]');
+ylabel('Q_s [kg m^{-1} s^{-1}]');
+title('Sediment Transport vs. Mean Flow');
+grid on;
+savefig('Matlab3_3_iii');
+
+% 2. Tidally-averaged sediment transport vs. UM2, UM4
 figure
 plot(UM2, Qs_x);
 hold on
 plot(UM4, Qs_x);
 hold off
-xlabel('U');
-ylabel('Qs');
+xlabel('U [m/s]');
+ylabel('Qs [kg m^{-1} s^{-1}]');
 legend('U_{M2}','U_{M4}');
 grid on;
 title('Sediment transport vs. velocity of tidal component');
-
+savefig('Matlab3_3_iv');
 
 %% Relationship of tidally-averaged sediment transport to generation of higher harmonics
-
-
+% Do we need something here?
 
 %% Relationship of tidally-averaged sediment transport to the phase difference between M2 and M4 flow velocities
 
@@ -311,12 +265,14 @@ phaseDiff = 2*phaseUM2 - phaseUM4;
 
 figure
 plot(phaseDiff, Qs_x);
-xlabel('2*\Phi_{UM2} - \Phi_{UM4}');
-ylabel('Sediment Transport');
+xlabel('2*\Phi_{UM2} - \Phi_{UM4} [radians]');
+ylabel('Q_s [kg m^{-1} s^{-1}]');
 title('Sediment transport vs. Phase Difference');
 grid on;
+savefig('Matlab3_3_v');
 
 %% Answers to Part 3.
+% This will need to be rewritten/updated.
 % Figure 1. The mean flow appears to entrain significant amounts of sediment.
 % Tidal asymmetry accounts for the net difference in sediment transport.
 % More specifically, we can say that duration asymmetry is not relevant for
