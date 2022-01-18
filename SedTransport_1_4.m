@@ -74,7 +74,7 @@ end
 
 % Quick update for legends
  for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.2f°');
+      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.0f°');
  end
 
 figure
@@ -107,9 +107,12 @@ grid on;
 title('Velocity asymmetry and sediment concentration II')
 
 subplot(3,1,3)
-plot(PhaseM4/pi,netVelocity);
+% scatter(PhaseM4/pi,netVelocity,'filled');
+scatter(PhaseM4,netVelocity,'filled');
+set(gca,'XTick',0:pi/2:pi) 
+set(gca,'XTickLabel',{'0','\pi/2','\pi'})
 ylabel('Peak Flood - Peak Ebb [m/s]');
-xlabel('Phase of M4 [\pi]');
+xlabel('Phase of M4 [rad]');
 title('Velocity asymmetry and phase');
 grid on;
 

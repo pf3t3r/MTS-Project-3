@@ -126,7 +126,7 @@ ylabel('U [m/s]');
 legend(Ws_legend(4:end));
 grid(gca,'minor');
 grid on;
-title('Sensitivity of Duration Asymmetry to Fall Velocity: IV - X')
+title('Sensitivity of Duration Asymmetry to Fall Velocity: IV - V')
 
 subplot(4,1,4)
 plot(WS,diffWs)
@@ -249,7 +249,7 @@ ylabel('U [m/s]');
 legend(Kv_legend(2:3));
 grid(gca,'minor')
 grid on;
-title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: IV - VI')
+title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: II - III')
 
 subplot(4,1,3)
 yyaxis left
@@ -263,7 +263,7 @@ ylabel('U [m/s]');
 legend(Kv_legend(4:end));
 grid(gca,'minor')
 grid on;
-title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: VII - X')
+title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: IV - V')
 
 subplot(4,1,4)
 plot(KV,diffKv)
