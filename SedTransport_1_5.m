@@ -94,7 +94,7 @@ end
 
 figure
 plot(x/1000,Qs_X*1000);
-ylabel('Q_s [g m^{-1} s^{-1}]');
+ylabel('Q_s [g m^{-1}s^{-1}]');
 xlabel('x [km]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
