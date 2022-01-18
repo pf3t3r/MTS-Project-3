@@ -143,7 +143,7 @@ savefig('Matlab3_1_3_i');
 
 alpha = 1e-4;                   % Erosion coefficent
 Ws = 1e-3;                      % Fall velocity of sediment
-KV = linspace(1e-3,1e-1,5);    % Array of eddy diffusivities
+KV = linspace(10e-3,10e-1,5);    % Array of eddy diffusivities
 diffKv = [];
 
 % Iterate across possible eddy diffusivities
