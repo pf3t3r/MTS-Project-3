@@ -36,10 +36,10 @@ ampM2=1;
 ampM4=0.2;
 phaseD1=0;
 phaseM2=0;
-%PhaseM4=pi/2; 
+PhaseM4=pi/2; 
 
 %sensitivity analysis phase difference
-PhaseM4=(0:90:90)/180*pi;
+%PhaseM4=(0:90:90)/180*pi;
 Np=length(PhaseM4);
 
 DIFF_phase=[];
@@ -165,10 +165,10 @@ Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1;
 %     DIFF_S=[DIFF_S Diff];
 % end
 % display(DIFF_S);
-%DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
+DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
 
 %Difference between sediment transport at flood and ebb
-%DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
+DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
 end
 
 %Plot to analyse sensitivity of sediment concentration and transport to

@@ -126,7 +126,7 @@ alpha=1e-4;             % Erosion coefficent
 %Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
-KV=linspace(1e-3,1e-1,5);
+KV=linspace(10e-3,10e-1,5);
 
 DIFF_kv=[];
 for i=1:5
@@ -450,7 +450,7 @@ alpha=1e-4;             % Erosion coefficent
 %Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
-KV=linspace(1e-3,1e-1,5);
+KV=linspace(10e-3,10e-1,5);
 
 DIFF_kv_ii=[];
 for i=1:5
