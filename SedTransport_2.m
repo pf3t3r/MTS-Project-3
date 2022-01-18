@@ -11,7 +11,7 @@ clear; clc; close all;
 %% 2.1.a 
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
-Kv=10e-2;                % Vertical eddy diffusivity (for vertical mixing)
+Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 %**************************************************************************
 %           Define time domain
@@ -43,6 +43,7 @@ PhaseM4=(0:90:90)/180*pi;
 Np=length(PhaseM4);
 
 DIFF_phase=[];
+figure
 for i=1:Np
     phaseM4=PhaseM4(i);
     
@@ -126,67 +127,55 @@ end
 % 
 Qs2=U.*C2;
 % 
-%For inspection
-figure
+%Plot to analyse sensitivity of sediment concentration and transport to
+%advection
+if i==1
+subplot(2,1,1);
+title('Sediment Concentration and Transport when phaseM2-phaseM4=0');
+elseif i==2  
+subplot(2,1,2);
+title('Sediment Concentration and Transport when phaseM2-phaseM4={\pi/2}');
+end
 yyaxis left
-ylabel('Concentration [kg/m^2]');
-plot(t,C(1,:))
+plot(t(235:418)/3600,C(1,235:418)*1000)
 hold on
-plot(t,C2(1,:))
+plot(t(235:418)/3600,C2(1,235:418)*1000)
+ylabel('Concentration [g/m^2]');
 yyaxis right
-ylabel('Flux [kg/(m*s)]');
-plot(t,Qs(1,:))
-plot(t,Qs2(1,:))
-xlabel('Time [s]');
+plot(t(235:418)/3600,Qs(1,235:418)*1000)
+plot(t(235:418)/3600,Qs2(1,235:418)*1000)
+ylabel('Flux [g/(m*s)]');
+xlabel('Time [h]');
 legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
 hold off
-if i==1
-    title('Sediment Concentration and Transport when M4=0');
-    savefig('Matlab3_2_ia');
-elseif i==2 
-    title('Sediment Concentration and Transport when M4={pi}');
-    savefig('Matlab3_2_ib');
-end
+savefig('Matlab3_2_i');
 
-%Sediment concentration at flood and ebb
-C_Max(i,:)=findpeaks(C(1,268:435));
-C2_Max(i,:)=findpeaks(C2(1,268:435));
+%figure
+%plot(t,U)
 
-%Sediment transport at flood and ebb
-Qs_Max(i)=findpeaks(Qs(1,235:335));
-Qs2_Max(i)=findpeaks(Qs2(1,235:335));
-Qs_Min(i)=findpeaks(-Qs(1,235:335))*-1;
-Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1;
+%Sediment concentration at flood and ebb (g/m^2)
+C_Max(i,:)=findpeaks(C(1,285:418))*1000;
+C2_Max(i,:)=findpeaks(C2(1,285:418))*1000;
+
+%Sediment transport at flood and ebb (g/m*s)
+Qs_Max(i)=findpeaks(Qs(1,235:335))*1000;
+Qs2_Max(i)=findpeaks(Qs2(1,235:335))*1000;
+Qs_Min(i)=findpeaks(-Qs(1,235:335))*-1000;
+Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1000;
 
 % DIFF_S=[];
-% %Difference between sediment concentration at flood and ebb
 % for q=1:2
 %     Diff=C_Max(i,q)-C2_Max(i,q);
 %     DIFF_S=[DIFF_S Diff];
 % end
 % display(DIFF_S);
-%DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
 
-%Difference between sediment transport at flood and ebb
-%DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
+% %Difference between sediment concentration at flood and ebb (g/m^2)
+DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
+
+%Difference between sediment transport at flood and ebb (g/m*s)
+DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
 end
-
-%Plot to analyse sensitivity of sediment concentration and transport to
-%advection
-figure
-yyaxis left
-ylabel('Concentration [kg/m^2]');
-plot(t,C(1,:))
-hold on
-plot(t,C2(1,:))
-yyaxis right
-ylabel('Flux [kg/(m*s)]');
-plot(t,Qs(1,:))
-plot(t,Qs2(1,:))
-xlabel('Time [s]');
-legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
-hold off
-% savefig('Matlab3_1_5_i');
 %% 2.1.b
 clear all
 Ws=1e-3;                % Fall velocity of sediment
@@ -550,14 +539,14 @@ end
 
 %Plot of sensitivity analysis
 figure
-ylabel('Flux difference [kg/(m*s)]');
-plot(WS,abs(DIFF_QS2_M4))
+plot(WS,abs(DIFF_QS2_M4)*1000)
+ylabel('Flux difference [g/(m*s)]');
 hold on
-scatter(WS,abs(DIFF_QS2_M4))
+scatter(WS,abs(DIFF_QS2_M4)*1000)
 xlabel('Ws [m/s]');
-legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
-title('Sensiivity Analysis of sediment transport for varying fall velocities (Ws [m/s])')
+%legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
+title('Sensiivity Analysis of sediment transport with advection for varying fall velocities (Ws [m/s])')
 hold off
-savefig('Matlab3_2_iii');
+savefig('Matlab3_2_ii');
 
 
