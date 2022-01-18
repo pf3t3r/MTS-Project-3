@@ -7,7 +7,7 @@ Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
 Ws = 1e-3;                      % Possible values for the fall velocity
 
 % Evaluate velocity asymmetry for different phases
-PhaseM4=(0:45:180)/180*pi;
+PhaseM4=(0:90:180)/180*pi;
 for i = 1:length(PhaseM4)
     
     phaseM4=PhaseM4(i);
@@ -74,7 +74,7 @@ end
 
 % Quick update for legends
  for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi,'phase = %.2f rad');
+      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.2f°');
  end
 
 figure
@@ -87,7 +87,7 @@ yyaxis right
 plot(t/3600,U_phaseM4);
 hold off
 ylabel('U [m/s]');
-xlabel('t [hrs]');
+xlabel('Time [hrs]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
@@ -100,7 +100,7 @@ ylabel('C [kg/m^2]');
 yyaxis right
 plot(t(1:300)/3600,U_phaseM4(:,1:300));
 ylabel('U [m/s]');
-xlabel('t [hrs]');
+xlabel('Time [hrs]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
@@ -117,29 +117,44 @@ grid on;
 % direction whereas a negative value indicates a net transport in the ebb
 % direction.
 
-savefig('pt-1-4');
+savefig('Matlab3_1_4_i');
 
 
 % This figure is not needed for the report.
 
 figure
 subplot(2,1,1);
-plot(t,U);
+plot(t,U(1,:));
+hold on
+plot(t,U(5,:));
+plot(t,U(10,:));
+plot(t,U(15,:));
+plot(t,U(20,:));
+plot(t,U(25,:));
+hold off
 xlabel('time [s]');
 ylabel('U [m/s]');
-title('Velocity vs Time for 26 locations across the basin');
+title('Velocity vs Time fof different locations across the basin');
 grid on;
-legend();
+legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km');
 
 subplot(2,1,2);
-plot(t(104:255),U(:,104:255));
+plot(t(104:255),U(1,104:255));
+hold on
+plot(t(104:255),U(5,104:255));
+plot(t(104:255),U(10,104:255));
+plot(t(104:255),U(15,104:255));
+plot(t(104:255),U(20,104:255));
+plot(t(104:255),U(25,104:255));
 xlabel('time [s]');
 ylabel('U [m/s]');
 grid on;
-legend();
+legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km');
 
 % The highest range of velocities in the above are for values of X close
 % to the seaward end of the basin. At the landward end of the basin, the
 % velocities reach zero.
 % The asymmetry of ebb and flood velocities stays constant across the
 % basin. The overall range simply declines.
+
+savefig('Matlab3_1_4_ii');
