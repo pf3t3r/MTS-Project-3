@@ -82,11 +82,11 @@ subplot(3,1,1)
 
 yyaxis left
 plot(t/3600,C_phaseM4);
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 yyaxis right
 plot(t/3600,U_phaseM4);
 hold off
-ylabel('U [m/s]');
+ylabel('U [ms^{-1}]');
 xlabel('Time [hrs]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
@@ -96,10 +96,10 @@ title('Velocity asymmetry and sediment concentration I')
 subplot(3,1,2)
 yyaxis left
 plot(t(1:300)/3600,C_phaseM4(:,1:300));
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 yyaxis right
 plot(t(1:300)/3600,U_phaseM4(:,1:300));
-ylabel('U [m/s]');
+ylabel('U [ms^{-1}]');
 xlabel('Time [hrs]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
@@ -111,9 +111,10 @@ subplot(3,1,3)
 scatter(PhaseM4,netVelocity,'filled');
 set(gca,'XTick',0:pi/2:pi) 
 set(gca,'XTickLabel',{'0','\pi/2','\pi'})
-ylabel('Peak Flood - Peak Ebb [m/s]');
+ylabel('Peak Flood - Peak Ebb [ms^{-1}]');
 xlabel('Phase of M4 [rad]');
 title('Velocity asymmetry and phase');
+grid(gca,'minor')
 grid on;
 
 % A positive value for netVelocity indicates a net transport in the flood
@@ -136,10 +137,10 @@ plot(t,U(20,:));
 plot(t,U(25,:));
 hold off
 xlabel('time [s]');
-ylabel('U [m/s]');
+ylabel('U [ms^{-1}]');
 title('Velocity vs Time fof different locations across the basin');
 grid on;
-legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km');
+legend('x = 0 km','x = 16 km','x = 36 km','x = 56 km','x = 76 km','x = 96 km');
 
 subplot(2,1,2);
 plot(t(104:255),U(1,104:255));
@@ -150,9 +151,9 @@ plot(t(104:255),U(15,104:255));
 plot(t(104:255),U(20,104:255));
 plot(t(104:255),U(25,104:255));
 xlabel('time [s]');
-ylabel('U [m/s]');
+ylabel('U [ms^{-1}]');
 grid on;
-legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km');
+legend('x = 0 km','x = 16 km','x = 36 km','x = 56 km','x = 76 km','x = 96 km');
 
 % The highest range of velocities in the above are for values of X close
 % to the seaward end of the basin. At the landward end of the basin, the

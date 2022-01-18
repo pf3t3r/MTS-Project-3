@@ -196,7 +196,7 @@ figure
 yyaxis left;
 plot(x/1000,Qs_x);
 hold on
-ylabel('Flux [kg m^{-1} s^{-1}]');
+ylabel('Q_s [kg m^{-1} s^{-1}]');
 yyaxis right;
 % plot(x/1000,U_x);
 plot(x/1000,U_avg*1000);
@@ -206,7 +206,7 @@ xlabel('x [km]');
 ylabel('U [mm/s]');
 grid(gca,'minor');
 grid on;
-title('Tidally-averaged sediment transport as a function of position in the estuary')
+title('Sediment Transport and Mean Flow as a function of position in the estuary')
 savefig('Matlab3_3_ii');
 
 
