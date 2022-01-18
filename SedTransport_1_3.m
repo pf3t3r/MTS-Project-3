@@ -6,7 +6,9 @@ clc; clear; close all;
 
 alpha = 1e-4;                   % Erosion coefficent
 Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
-WS = linspace(0.5e-3,2e-2,5);   % Possible values for the fall velocity
+test1 = [0.5e-3, 0.003, 0.005, 0.008, 2e-2];
+% WS = linspace(0.5e-3,2e-2,5);   % Possible values for the fall velocity
+WS = test1;
 diffWs = [];
 
 % Iterate across possible fall velocities
@@ -89,7 +91,7 @@ subplot(4,1,1)
 yyaxis left
 plot(t,C_Ws(1,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Ws(1,:))
@@ -104,7 +106,7 @@ subplot(4,1,2)
 yyaxis left
 plot(t,C_Ws(2:3,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Ws(2:3,:))
@@ -118,7 +120,7 @@ subplot(4,1,3)
 yyaxis left
 plot(t,C_Ws(4:end,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Ws(4:end,:))
@@ -129,7 +131,7 @@ grid on;
 title('Sensitivity of Duration Asymmetry to Fall Velocity: IV - V')
 
 subplot(4,1,4)
-plot(WS,diffWs)
+plot(WS,diffWs,'--O')
 xlabel('W_s [m/s]');
 ylabel('\Deltat [hrs]');
 grid(gca,'minor')
@@ -143,7 +145,9 @@ savefig('Matlab3_1_3_i');
 
 alpha = 1e-4;                   % Erosion coefficent
 Ws = 1e-3;                      % Fall velocity of sediment
-KV = linspace(10e-3,10e-1,5);    % Array of eddy diffusivities
+test = [1e-3, 3e-3, 9e-3, 2e-2, 1e-1];
+% KV = linspace(1e-3,1e-1,5);    % Array of eddy diffusivities
+KV = test;
 diffKv = [];
 
 % Iterate across possible eddy diffusivities
@@ -218,7 +222,7 @@ end
 
 % Quick update for legends
  for i = 1:length(KV)
-      Kv_legend{i} = num2str(KV(i),'K_v = %.4f m^2/s');
+      Kv_legend{i} = num2str(KV(i),'K_v = %.4f m^{2}s^{-1}');
  end
 
 figure
@@ -227,7 +231,7 @@ subplot(4,1,1)
 yyaxis left
 plot(t,C_Kv(1,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Kv(1,:))
@@ -235,13 +239,13 @@ ylabel('U [m/s]');
 legend(Kv_legend(1));
 grid(gca,'minor')
 grid on;
-title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: I - III')
+title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: I')
 
 subplot(4,1,2)
 yyaxis left
 plot(t,C_Kv(2:3,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Kv(2:3,:))
@@ -255,7 +259,7 @@ subplot(4,1,3)
 yyaxis left
 plot(t,C_Kv(4:end,:))
 xlabel('Time [s]');
-ylabel('C [kg/m^2]');
+ylabel('C [kgm^{-2}]');
 hold on
 yyaxis right
 plot(t,U_Kv(4:end,:))
@@ -266,8 +270,8 @@ grid on;
 title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: IV - V')
 
 subplot(4,1,4)
-plot(KV,diffKv)
-xlabel('K_v [m^{2}/s]');
+plot(KV,diffKv,'--O')
+xlabel('K_v [m^{2}s^{-1}]');
 ylabel('\Deltat [hrs]');
 grid(gca,'minor')
 grid on;
