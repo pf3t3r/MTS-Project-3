@@ -117,7 +117,7 @@ title('Sensitivity analysis of time difference between peak flow and peak sedime
 xlabel('W_{s} [m/s]');
 ylabel('Time [s]');
 grid on;
-savefig('Matlab3_1_i');
+savefig('Matlab3_1_1_i');
 
 %% Part 1.1.b: Eddy Diffusivity
 
@@ -219,7 +219,7 @@ title('Sensitivity analysis of time difference between peak flow and peak sedime
 xlabel('K_{v} [m^{2}/s]');
 ylabel('Time [s]');
 grid on;
-savefig('Matlab3_1_ii');
+savefig('Matlab3_1_1_ii');
 
 %% 1.2: Sensitivity of the difference in peak sediment concentration at peak ebb and flood to ...
 
@@ -331,7 +331,7 @@ title('Sensitivity analysis of difference in peak sediment concentration between
 xlabel('Phase difference [rad]');
 ylabel('Concentration [kg/m^2]');
 grid on;
-savefig('Matlab3_1_iii');
+savefig('Matlab3_1_2_i');
 
 %% Part 1.2.b: Fall Velocity of the sediment
 
@@ -441,7 +441,7 @@ title('Sensitivity analysis of difference in peak sediment concentration between
 xlabel('W_{s} [m/s]');
 ylabel('Concentration [kg/m^2]');
 grid on;
-savefig('Matlab3_1_iv');
+savefig('Matlab3_1_2_ii');
 
 %% Part 1.2.c: Eddy Diffusivity
 
@@ -551,4 +551,4 @@ title('Sensitivity analysis of difference in peak sediment concentration between
 xlabel('K_{v} [m^{2}/s]');
 ylabel('Concentration [kg/m^2]');
 grid on;
-savefig('Matlab3_1_v');
+savefig('Matlab3_1_2_iii');

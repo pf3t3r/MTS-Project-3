@@ -3,7 +3,7 @@ clc; clear; close all;
 %% 1.4: Velocity Asymmetry
 
 alpha = 1e-4;                   % Erosion coefficent
-Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
+Kv = 10e-2;                      % Vertical eddy diffusivity (vertical mixing)
 Ws = 1e-3;                      % Possible values for the fall velocity
 
 % Evaluate velocity asymmetry for different phases
@@ -61,85 +61,43 @@ for i = 1:length(PhaseM4)
         [C(px,1:Nt)] = GroenModel(U(px,1:Nt), t, deltaT, T, Ws, alpha, Kv);
     end
     
-    % Save C and U for each value of phaseM4 at the first point in x.    
-    C_phaseM4(i,:) = C(1,:);
-    U_phaseM4(i,:) = U(1,:);
-    
-    peakFlood(i) = max(findpeaks(U_phaseM4(i,:)));
-    peakEbbLoc = islocalmin(U_phaseM4(i,:));
-    peakEbb(i) = -min(nonzeros(peakEbbLoc.*U_phaseM4(i,:)));
-    
-    netVelocity(i) = peakFlood(i) - peakEbb(i);
+    Qs=U.*C;                                            % Qs is sediment flux
+
+    Nsteps=T/deltaT;                                    % Nr of timestepf in one tidal cycle.
+
+    % Calculate tidally averaged sediment transport as a function of position
+    % in the estuary (only averaging over last tidal cycle)
+    Qs_x = [];
+    U_x = [];
+for position = 1:26
+    Qs_t(position)=0;
+    U_t(position)=0;
+for time = 1342:1491
+    Qs_t(position) = Qs_t(position) + Qs(position,time);
+    U_t(position) = U_t(position) + U(position,time);
+end
+    % Tidally-averaged sediment transport
+    meanQs_x = Qs_t(position)/149;   
+    Qs_x = [Qs_x meanQs_x];
+
+    meanU_x = U_t(position)/149;
+    U_x = [U_x meanU_x];
+end      
+    Qs_X(i,:)=Qs_x;
+    U_X(i,:)=U_x;
 end
 
 % Quick update for legends
  for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi,'phase = %.2f rad');
+      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.2f°');
  end
 
 figure
-subplot(3,1,1)
-
-yyaxis left
-plot(t/3600,C_phaseM4);
-ylabel('C [kg/m^2]');
-yyaxis right
-plot(t/3600,U_phaseM4);
-hold off
-ylabel('U [m/s]');
-xlabel('t [hrs]');
+plot(x,Qs_X);
+ylabel('Flux [kg/(m*s)]');
+xlabel('x [m]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
-title('Velocity asymmetry and sediment concentration I')
-
-subplot(3,1,2)
-yyaxis left
-plot(t(1:300)/3600,C_phaseM4(:,1:300));
-ylabel('C [kg/m^2]');
-yyaxis right
-plot(t(1:300)/3600,U_phaseM4(:,1:300));
-ylabel('U [m/s]');
-xlabel('t [hrs]');
-legend(PhaseM4_legend);
-grid(gca,'minor')
-grid on;
-title('Velocity asymmetry and sediment concentration II')
-
-subplot(3,1,3)
-plot(PhaseM4/pi,netVelocity);
-ylabel('Peak Flood - Peak Ebb [m/s]');
-xlabel('Phase of M4 [\pi]');
-title('Velocity asymmetry and phase');
-grid on;
-
-% A positive value for netVelocity indicates a net transport in the flood
-% direction whereas a negative value indicates a net transport in the ebb
-% direction.
-
-savefig('pt-1-4');
-
-
-% This figure is not needed for the report.
-
-figure
-subplot(2,1,1);
-plot(t,U);
-xlabel('time [s]');
-ylabel('U [m/s]');
-title('Velocity vs Time for 26 locations across the basin');
-grid on;
-legend();
-
-subplot(2,1,2);
-plot(t(104:255),U(:,104:255));
-xlabel('time [s]');
-ylabel('U [m/s]');
-grid on;
-legend();
-
-% The highest range of velocities in the above are for values of X close
-% to the seaward end of the basin. At the landward end of the basin, the
-% velocities reach zero.
-% The asymmetry of ebb and flood velocities stays constant across the
-% basin. The overall range simply declines.
+title('Sensitivity of tidally averaged sediment transport to the relative phase difference between M2 and M4');
+savefig('Matlab3_1_5_i');
