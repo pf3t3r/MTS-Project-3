@@ -11,7 +11,7 @@ clear; clc; close all;
 %% 2.1.a 
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
-Kv=10e-2;                % Vertical eddy diffusivity (for vertical mixing)
+Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 %**************************************************************************
 %           Define time domain
@@ -43,6 +43,7 @@ PhaseM4=(0:90:90)/180*pi;
 Np=length(PhaseM4);
 
 DIFF_phase=[];
+figure
 for i=1:Np
     phaseM4=PhaseM4(i);
     
@@ -126,67 +127,69 @@ end
 % 
 Qs2=U.*C2;
 % 
-%For inspection
-figure
+%Plot to analyse sensitivity of sediment concentration and transport to advection
+if i==1
+subplot(4,1,1);
+title('Sediment concentration, transport and mean flow when phaseM2-phaseM4=0');
+elseif i==2  
+subplot(4,1,3);
+title('Sediment concentration, transport and mean flow when phaseM2-phaseM4={\pi/2}');
+end
 yyaxis left
-ylabel('Concentration [kg/m^2]');
-plot(t,C(1,:))
+plot(t(241:409)/3600,C(1,241:409)*1000)
 hold on
-plot(t,C2(1,:))
+plot(t(241:409)/3600,C2(1,241:409)*1000)
+ylabel('Concentration [g/m^2]');
 yyaxis right
-ylabel('Flux [kg/(m*s)]');
-plot(t,Qs(1,:))
-plot(t,Qs2(1,:))
-xlabel('Time [s]');
+plot(t(241:409)/3600,Qs(1,241:409)*1000)
+plot(t(241:409)/3600,Qs2(1,241:409)*1000)
+ylabel('Flux [g/(m*s)]');
+xlabel('Time [h]');
 legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
 hold off
 if i==1
-    title('Sediment Concentration and Transport when M4=0');
-    savefig('Matlab3_2_ia');
-elseif i==2 
-    title('Sediment Concentration and Transport when M4={pi}');
-    savefig('Matlab3_2_ib');
+subplot(4,1,2);
+title('Mean flow when phaseM2-phaseM4=0');
+elseif i==2  
+subplot(4,1,4);
+title('Mean flow when phaseM2-phaseM4={\pi/2}');
 end
+plot(t(241:409)/3600,U(1,241:409))
+hold on
+plot(t(241:409)/3600,U(5,241:409))
+plot(t(241:409)/3600,U(10,241:409))
+plot(t(241:409)/3600,U(15,241:409))
+plot(t(241:409)/3600,U(20,241:409))
+plot(t(241:409)/3600,U(25,241:409))
+ylabel('Speed [m/s]');
+xlabel('Time [h]');
+legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km')
+savefig('Matlab3_2_i');
 
-%Sediment concentration at flood and ebb
-C_Max(i,:)=findpeaks(C(1,268:435));
-C2_Max(i,:)=findpeaks(C2(1,268:435));
+%Sediment concentration at flood and ebb (g/m^2)
+C_Max(i,:)=findpeaks(C(1,285:418))*1000;
+C2_Max(i,:)=findpeaks(C2(1,285:418))*1000;
 
-%Sediment transport at flood and ebb
-Qs_Max(i)=findpeaks(Qs(1,235:335));
-Qs2_Max(i)=findpeaks(Qs2(1,235:335));
-Qs_Min(i)=findpeaks(-Qs(1,235:335))*-1;
-Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1;
+%Sediment transport at flood and ebb (g/m*s)
+Qs_Max(i)=findpeaks(Qs(1,235:335))*1000;
+Qs2_Max(i)=findpeaks(Qs2(1,235:335))*1000;
+Qs_Min(i)=findpeaks(-Qs(1,235:335))*-1000;
+Qs2_Min(i)=findpeaks(-Qs2(1,235:335))*-1000;
 
 % DIFF_S=[];
-% %Difference between sediment concentration at flood and ebb
 % for q=1:2
 %     Diff=C_Max(i,q)-C2_Max(i,q);
 %     DIFF_S=[DIFF_S Diff];
 % end
 % display(DIFF_S);
-%DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
 
-%Difference between sediment transport at flood and ebb
-%DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
+% %Difference between sediment concentration at flood and ebb (g/m^2)
+DIFF_S2(i,:)=[C_Max(i,1)-C2_Max(i,1) C_Max(i,2)-C2_Max(i,2)]
+
+%Difference between sediment transport at flood and ebb (g/m*s)
+DIFF_Qs(i,:)=[Qs_Max(i)-Qs2_Max(i) Qs_Min(i)-Qs2_Min(i)]
 end
 
-%Plot to analyse sensitivity of sediment concentration and transport to
-%advection
-figure
-yyaxis left
-ylabel('Concentration [kg/m^2]');
-plot(t,C(1,:))
-hold on
-plot(t,C2(1,:))
-yyaxis right
-ylabel('Flux [kg/(m*s)]');
-plot(t,Qs(1,:))
-plot(t,Qs2(1,:))
-xlabel('Time [s]');
-legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
-hold off
-% savefig('Matlab3_1_5_i');
 %% 2.1.b
 clear all
 Ws=1e-3;                % Fall velocity of sediment
@@ -266,19 +269,8 @@ for px=1:Nx
     [C(px,1:Nt)]=GroenModel(U(px,1:Nt),t,deltaT, T, Ws, alpha, Kv);
 end
 
-%Sediment transport and tidally averaged sediment transport
-Qs=U.*C;                                            % Qs is sediment flux
-
-Nsteps=T/deltaT;                                    % Nr of timestepf in one tidal cycle.
-
-% calculate tidally averaged sediment transport (only averaging over last tidal cycle)
-S_Qs=0;
-for time=1342:1491
-    S_Qs=S_Qs+Qs(time);
-end
-
-% tidally averaged sediment transport
-meanQs=S_Qs/149; 
+%Sediment transport 
+Qs=U.*C;                                            % Qs is sediment flux  
 
 Nsteps=floor(T/deltaT);
 
@@ -293,20 +285,8 @@ phaseUM2(px)=atan(coefout(2)/coefout(3));
 phaseUM4(px)=atan(coefout(3)/coefout(5));
 end
 
-UM2=UM2';
-Qs_M2=UM2.*C;                                            % Qs is sediment flux
-
-% calculate tidally averaged sediment transport for M2 signal (only averaging over last tidal cycle)
-S_Qs_M2=0;
-for time=1342:1491
-    S_Qs_M2=S_Qs_M2+Qs_M2(time);
-end
-
-% tidally averaged sediment transport
-meanQs_M2=S_Qs_M2/149;    
-%**************************************************
-
-
+U_M2=UM2';
+Qs_M2=U_M2.*C;                                            % Qs is sediment flux
 %**************************************************************************
 % Use calculated flux with Groen's model to calculate sediment
 % concentration with model that includes advective fluxes
@@ -326,45 +306,63 @@ end
 %Sediment transport with advection
 Qs2=U.*C2;
 
-% calculate tidally averaged sediment transport with advection (only averaging over last tidal cycle)
-S_Qs2=0;
-for time=1342:1491
-    S_Qs2=S_Qs2+Qs2(time);
+% Calculate tidally averaged sediment transport as a function of position
+% in the estuary (only averaging over last tidal cycle)
+Qs2_x = [];
+U_x = [];
+for position = 1:26
+    Qs2_t(position)=0;
+    U_t(position)=0;
+for time = 1342:1491
+    Qs2_t(position) = Qs2_t(position) + Qs2(position,time);
+    U_t(position) = U_t(position) + U(position,time);
 end
+% Tidally-averaged sediment transport
+meanQs2_x = Qs2_t(position)/149;   
+Qs2_x = [Qs2_x meanQs2_x];
 
-% tidally averaged sediment transport
-meanQs2=S_Qs2/149;
+meanU_x = U_t(position)/149;
+U_x = [U_x meanU_x];
+end 
 
 %Sediment transport with advection without M4
-Qs2_M2=UM2.*C2;  
+Qs2_M2=U_M2.*C2;  
 
-% calculate tidally averaged sediment transport for M2 signal (only averaging over last tidal cycle)
-S_Qs2_M2=0;
-for time=1342:1491
-    S_Qs2_M2=S_Qs2_M2+Qs2_M2(time);
+% Calculate tidally averaged sediment transport as a function of position
+% in the estuary without M4 (only averaging over last tidal cycle)
+Qs2_M2_x = [];
+for position = 1:26
+    Qs2_M2_t(position)=0;
+for time = 1342:1491
+    Qs2_M2_t(position) = Qs2_M2_t(position) + Qs2_M2(position,time);
 end
-
-% tidally averaged sediment transport
-meanQs2_M2=S_Qs2_M2/149; 
+% Tidally-averaged sediment transport
+meanQs2_M2_x = Qs2_M2_t(position)/149;   
+Qs2_M2_x = [Qs2_M2_x meanQs2_M2_x]; 
+end
 
 % Calculate the variation in tidally averaged sediment transport with and
 % without M4 signal for the model with advection and the model without
 % advection. 
 
-DIFF_Qs_M4=meanQs-meanQs_M2;
-DIFF_Qs2_M4=meanQs2-meanQs2_M2;
+DIFF_Qs2_M4=Qs2_M2_x-Qs2_x;
 
-%Plot of difference in transport and flux as a function of space TO BE DONE
-% figure
-% ylabel('Flux difference [kg/(m*s)]');
-% plot(x,abs(Qs2(:,1342:1491)-Qs2_M2))
-% hold on
-% scatter(abs(DIFF_QS2_M4))
-% xlabel('Ws [m/s]');
-% legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
-% title('Sensiivity Analysis of sediment transport for varying fall velocities (Ws [m/s])')
-% hold off
-% savefig('Matlab3_2_ii');
+%Plot of difference in transport as a function of space 
+figure
+yyaxis left
+plot(x/1000,DIFF_Qs2_M4*1000)
+ylabel('Flux difference [g/(m*s)]');
+hold on 
+yyaxis right
+%plot(x/1000,U_x)
+%plot(x/1000,UM2)
+plot(x/1000,UM4)
+ylabel('Mean flow [m/s]');
+xlabel('x [km]');
+legend('Difference in tidally averaged sediment transport Qs_{UM2}-Qs_U','Tidally averaged M4 flow');
+title('Impact of higher harmonics (M4) on sediment transport')
+hold off
+savefig('Matlab3_2_ii');
 
 %% 2.1.c 
 clear all
@@ -550,13 +548,13 @@ end
 
 %Plot of sensitivity analysis
 figure
-ylabel('Flux difference [kg/(m*s)]');
-plot(WS,abs(DIFF_QS2_M4))
+plot(WS,abs(DIFF_QS2_M4)*1000)
+ylabel('Flux difference [g/(m*s)]');
 hold on
-scatter(WS,abs(DIFF_QS2_M4))
+scatter(WS,abs(DIFF_QS2_M4)*1000)
 xlabel('Ws [m/s]');
-legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
-title('Sensiivity Analysis of sediment transport for varying fall velocities (Ws [m/s])')
+%legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
+title('Sensiivity Analysis of sediment transport with advection for varying fall velocities (Ws [m/s])')
 hold off
 savefig('Matlab3_2_iii');
 
