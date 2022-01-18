@@ -9,7 +9,7 @@ clear; clc; close all;
 %% 1.1: Sensitivity of the Time Delay between Peak Concentrations to ...
 
 %% Part 1.1.a: Fall Velocity of sediment
-%Ws=1e-3;                % Fall velocity of sediment
+
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
@@ -115,7 +115,7 @@ figure
 plot(WS,abs(DIFF_ws))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying fall velocities (W_s)');
 xlabel('W_{s} [m/s]');
-ylabel('Time [s]');
+ylabel('Time difference [hrs]');
 grid on;
 savefig('Matlab3_1_1_i');
 
@@ -123,7 +123,6 @@ savefig('Matlab3_1_1_i');
 
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
-%Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
 KV=linspace(10e-3,10e-1,5);
@@ -217,7 +216,7 @@ figure
 plot(KV,abs(DIFF_kv))
 title('Sensitivity analysis of time difference between peak flow and peak sediment concentration for varying eddy diffusivities (K_v)');
 xlabel('K_{v} [m^{2}/s]');
-ylabel('Time [s]');
+ylabel('Time difference [hrs]');
 grid on;
 savefig('Matlab3_1_1_ii');
 
@@ -335,7 +334,6 @@ savefig('Matlab3_1_2_i');
 
 %% Part 1.2.b: Fall Velocity of the sediment
 
-%Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
 Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
@@ -447,10 +445,9 @@ savefig('Matlab3_1_2_ii');
 
 Ws=1e-3;                % Fall velocity of sediment
 alpha=1e-4;             % Erosion coefficent
-%Kv=1e-2;                % Vertical eddy diffusivity (for vertical mixing)
 
 % Sensitivity analysis Kv
-KV=linspace(10e-3,10e-1,5);
+KV=linspace(1e-3,1e-1,5);
 
 DIFF_kv_ii=[];
 for i=1:5

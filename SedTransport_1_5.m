@@ -1,9 +1,9 @@
 clc; clear; close all;
 
-%% 1.4: Velocity Asymmetry
+%% 1.4: Sensitivity of tidally averaged sediment transport to the relative phase difference between M2 and M4
 
 alpha = 1e-4;                   % Erosion coefficent
-Kv = 10e-2;                      % Vertical eddy diffusivity (vertical mixing)
+Kv = 10e-2;                     % Vertical eddy diffusivity (vertical mixing)
 Ws = 1e-3;                      % Possible values for the fall velocity
 
 % Evaluate velocity asymmetry for different phases
@@ -89,13 +89,13 @@ end
 
 % Quick update for legends
  for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.2f°');
+      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.0f°');
  end
 
 figure
-plot(x,Qs_X);
-ylabel('Flux [kg/(m*s)]');
-xlabel('x [m]');
+plot(x/1000,Qs_X*1000);
+ylabel('Q_s [g m^{-1} s^{-1}]');
+xlabel('x [km]');
 legend(PhaseM4_legend);
 grid(gca,'minor')
 grid on;
