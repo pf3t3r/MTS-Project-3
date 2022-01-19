@@ -283,9 +283,9 @@ for px=1:Nx
 coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
 coefout=nlinfit(t,U(px,:),@harmfit,coefin);
 U0(px)=coefout(1);
-UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
+UM2(px)=sqrt(coefout(2).^2+coefout(4).^2);
 UM4(px)=sqrt(coefout(3).^2+coefout(5).^2);
-phaseUM2(px)=atan(coefout(2)/coefout(3));
+phaseUM2(px)=atan(coefout(2)/coefout(4));
 phaseUM4(px)=atan(coefout(3)/coefout(5));
 end
 
@@ -478,9 +478,9 @@ for px=1:Nx
 coefin=[0.1, 0.1, 0.1, 0.1, 0.1];
 coefout=nlinfit(t,U(px,:),@harmfit,coefin);
 U0(px)=coefout(1);
-UM2(px)=sqrt(coefout(2).^2+coefout(3).^2);
+UM2(px)=sqrt(coefout(2).^2+coefout(4).^2);
 UM4(px)=sqrt(coefout(3).^2+coefout(5).^2);
-phaseUM2(px)=atan(coefout(2)/coefout(3));
+phaseUM2(px)=atan(coefout(2)/coefout(4));
 phaseUM4(px)=atan(coefout(3)/coefout(5));
 end
 
