@@ -4,7 +4,7 @@ clear; clc; close all;
 % Parameters needed for the sediment transport calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Part 2: patial settling lag mechanism in short basin
+%% Part 2: Spatial settling lag mechanism in short basin
 
 %% 2.1:
 
@@ -130,10 +130,10 @@ Qs2=U.*C2;
 %Plot to analyse sensitivity of sediment concentration and transport to advection
 if i==1
 subplot(4,1,1);
-title('Sediment concentration, transport and mean flow when phaseM2-phaseM4=0');
+title('Sediment concentration, transport, and mean flow: phaseM2 - phaseM4 = 0');
 elseif i==2  
 subplot(4,1,3);
-title('Sediment concentration, transport and mean flow when phaseM2-phaseM4={\pi/2}');
+title('Sediment concentration, transport, and mean flow: phaseM2 - phaseM4 = {\pi/2}');
 end
 yyaxis left
 plot(t(241:409)/3600,C(1,241:409)*1000)
@@ -146,6 +146,8 @@ plot(t(241:409)/3600,Qs2(1,241:409)*1000)
 ylabel('Flux [g/(m*s)]');
 xlabel('Time [h]');
 legend('Concentration without advection','Concentration with advection','Transport without advection','Transport with advection');
+grid(gca,'minor');
+grid on;
 hold off
 if i==1
 subplot(4,1,2);
@@ -163,6 +165,8 @@ plot(t(241:409)/3600,U(20,241:409))
 plot(t(241:409)/3600,U(25,241:409))
 ylabel('Speed [m/s]');
 xlabel('Time [h]');
+grid(gca,'minor');
+grid on;
 legend('x=0km','x=16km','x=36km','x=56km','x=76km','x=96km')
 savefig('Matlab3_2_i');
 
@@ -362,6 +366,7 @@ ylabel('Mean flow [m/s]');
 xlabel('x [km]');
 legend('Difference in tidally averaged sediment transport Qs_{UM2}-Qs_U','TIdally averaged flow velocity U','Tidally averaged M4 flow U_{M4}');
 title('Impact of higher harmonics (M4) on sediment transport')
+grid on;
 hold off
 savefig('Matlab3_2_ii');
 
@@ -553,10 +558,11 @@ plot(WS,abs(DIFF_QS2_M4)*1000)
 ylabel('Flux difference [g/(m*s)]');
 hold on
 scatter(WS,abs(DIFF_QS2_M4)*1000)
-xlabel('Ws [m/s]');
+xlabel('w_s [m/s]');
 %legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
-title('Sensiivity Analysis of settling lag mechanism for varying fall velocities (Ws [m/s])')
+title('Sensitivity Analysis of settling lag mechanism on varying fall velocities')
 hold off
+grid on;
 savefig('Matlab3_2_iii');
 
 
