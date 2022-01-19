@@ -61,9 +61,12 @@ for i = 1:length(PhaseM4)
         [C(px,1:Nt)] = GroenModel(U(px,1:Nt), t, deltaT, T, Ws, alpha, Kv);
     end
     
+    Qs = U.*C;
+    
     % Save C and U for each value of phaseM4 at the first point in x.    
     C_phaseM4(i,:) = C(1,:);
     U_phaseM4(i,:) = U(1,:);
+    Q_phaseM4(i,:) = Qs(1,:);
     
     peakFlood(i) = max(findpeaks(U_phaseM4(i,:)));
     peakEbbLoc = islocalmin(U_phaseM4(i,:));
@@ -73,46 +76,83 @@ for i = 1:length(PhaseM4)
 end
 
 % Quick update for legends
- for i = 1:length(PhaseM4)
-      PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.0f°');
- end
+%  for i = 1:length(PhaseM4)
+%       PhaseM4_legend{i} = num2str(PhaseM4(i)/pi*180,'phase = %.0f°');
+%  end
 
 figure
-subplot(3,1,1)
 
+subplot(4,1,1)
 yyaxis left
-plot(t/3600,C_phaseM4);
-ylabel('C [kgm^{-2}]');
+% plot(t/3600,C_phaseM4(1,:));
+plot(t/3600,Q_phaseM4(1,:)*1000);
+hold on
+ylabel('Qs [gm^{-1}s^{-1}]');
 yyaxis right
-plot(t/3600,U_phaseM4);
+plot(t/3600,U_phaseM4(1,:));
+% plot(t/3600,Qs(1,:));
 hold off
 ylabel('U [ms^{-1}]');
 xlabel('Time [hrs]');
-legend(PhaseM4_legend);
+% legend(PhaseM4_legend);
+legend('Q','U');
 grid(gca,'minor')
 grid on;
-title('Velocity asymmetry and sediment concentration I')
+title(['Velocity asymmetry and sediment concentration: ',num2str(PhaseM4(1)*(180/pi)),'°'])
 
-subplot(3,1,2)
+subplot(4,1,2)
 yyaxis left
-plot(t(1:300)/3600,C_phaseM4(:,1:300));
-ylabel('C [kgm^{-2}]');
+plot(t/3600,Q_phaseM4(2,:)*1000);
+hold on
+ylabel('Q [gm^{-1}s^{-1}]');
 yyaxis right
-plot(t(1:300)/3600,U_phaseM4(:,1:300));
+plot(t/3600,U_phaseM4(2,:));
+hold off
 ylabel('U [ms^{-1}]');
 xlabel('Time [hrs]');
-legend(PhaseM4_legend);
+% legend(PhaseM4_legend);
+legend('Q','U');
 grid(gca,'minor')
 grid on;
-title('Velocity asymmetry and sediment concentration II')
+title(['Velocity asymmetry and sediment concentration: ',num2str(PhaseM4(2)*(180/pi)),'°'])
 
-subplot(3,1,3)
-% scatter(PhaseM4/pi,netVelocity,'filled');
-scatter(PhaseM4,netVelocity,'filled');
-set(gca,'XTick',0:pi/2:pi) 
-set(gca,'XTickLabel',{'0','\pi/2','\pi'})
+subplot(4,1,3)
+yyaxis left
+plot(t/3600,Q_phaseM4(3,:)*1000);
+hold on
+ylabel('Q [gm^{-1}s^{-1}]');
+yyaxis right
+plot(t/3600,U_phaseM4(3,:));
+hold off
+ylabel('U [ms^{-1}]');
+xlabel('Time [hrs]');
+% legend(PhaseM4_legend);
+legend('Q','U');
+grid(gca,'minor')
+grid on;
+title(['Velocity asymmetry and sediment concentration: ',num2str(PhaseM4(3)*(180/pi)),'°']);
+
+% Close-up of the above plots: uncomment to view
+% subplot(3,2,2)
+% yyaxis left
+% plot(t(1:300)/3600,C_phaseM4(:,1:300));
+% ylabel('C [kgm^{-2}]');
+% yyaxis right
+% plot(t(1:300)/3600,U_phaseM4(:,1:300));
+% ylabel('U [ms^{-1}]');
+% xlabel('Time [hrs]');
+% legend(PhaseM4_legend);
+% grid(gca,'minor')
+% grid on;
+% title('Velocity asymmetry and sediment concentration II')
+
+% figure
+subplot(4,1,4)
+plot(PhaseM4*(180/pi),netVelocity,'--O');
+% set(gca,'XTick',0:pi/2:pi) 
+% set(gca,'XTickLabel',{'0','\pi/2','\pi'})
 ylabel('Peak Flood - Peak Ebb [ms^{-1}]');
-xlabel('Phase of M4 [rad]');
+xlabel('Phase of M4 [°]');
 title('Velocity asymmetry and phase');
 grid(gca,'minor')
 grid on;
@@ -128,29 +168,29 @@ savefig('Matlab3_1_4_i');
 
 figure
 subplot(2,1,1);
-plot(t,U(1,:));
+plot(t/3600,U(1,:));
 hold on
-plot(t,U(5,:));
-plot(t,U(10,:));
-plot(t,U(15,:));
-plot(t,U(20,:));
-plot(t,U(25,:));
+plot(t/3600,U(5,:));
+plot(t/3600,U(10,:));
+plot(t/3600,U(15,:));
+plot(t/3600,U(20,:));
+plot(t/3600,U(25,:));
 hold off
-xlabel('time [s]');
+xlabel('time [hrs]');
 ylabel('U [ms^{-1}]');
 title('Velocity vs Time fof different locations across the basin');
 grid on;
 legend('x = 0 km','x = 16 km','x = 36 km','x = 56 km','x = 76 km','x = 96 km');
 
 subplot(2,1,2);
-plot(t(104:255),U(1,104:255));
+plot(t(104:255)/3600,U(1,104:255));
 hold on
-plot(t(104:255),U(5,104:255));
-plot(t(104:255),U(10,104:255));
-plot(t(104:255),U(15,104:255));
-plot(t(104:255),U(20,104:255));
-plot(t(104:255),U(25,104:255));
-xlabel('time [s]');
+plot(t(104:255)/3600,U(5,104:255));
+plot(t(104:255)/3600,U(10,104:255));
+plot(t(104:255)/3600,U(15,104:255));
+plot(t(104:255)/3600,U(20,104:255));
+plot(t(104:255)/3600,U(25,104:255));
+xlabel('time [hrs]');
 ylabel('U [ms^{-1}]');
 grid on;
 legend('x = 0 km','x = 16 km','x = 36 km','x = 56 km','x = 76 km','x = 96 km');
