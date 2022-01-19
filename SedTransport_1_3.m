@@ -6,9 +6,9 @@ clc; clear; close all;
 
 alpha = 1e-4;                   % Erosion coefficent
 Kv = 1e-2;                      % Vertical eddy diffusivity (vertical mixing)
-test1 = [0.5e-3, 0.003, 0.005, 0.008, 2e-2];
-% WS = linspace(0.5e-3,2e-2,5);   % Possible values for the fall velocity
-WS = test1;
+
+% Possible values for the fall velocity
+WS = [0.5e-3, 0.003, 0.005, 0.008, 2e-2];                               
 diffWs = [];
 
 % Iterate across possible fall velocities
@@ -145,9 +145,9 @@ savefig('Matlab3_1_3_i');
 
 alpha = 1e-4;                   % Erosion coefficent
 Ws = 1e-3;                      % Fall velocity of sediment
-test = [1e-3, 3e-3, 9e-3, 2e-2, 1e-1];
-% KV = linspace(1e-3,1e-1,5);    % Array of eddy diffusivities
-KV = test;
+
+% Possible eddy diffusivities
+KV = [1e-3, 3e-3, 9e-3, 2e-2, 1e-1];
 diffKv = [];
 
 % Iterate across possible eddy diffusivities
