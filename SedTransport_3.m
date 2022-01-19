@@ -101,10 +101,10 @@ Qs = U.*C;
 % ... then calculate the tidally-averaged sediment transport (averaged
 % over the last tidal cycle)
 S_Qs = 0;
-for time = 2013:2236
+for time = 1788:2012
     S_Qs = S_Qs + Qs(time);
 end
-meanQs = S_Qs/223; 
+meanQs = S_Qs/224; 
 
 % Calculate tidally averaged sediment transport as a function of position
 % in the estuary (only averaging over last tidal cycle)
@@ -114,15 +114,15 @@ U_x = [];
 for position = 1:81
     Qs_t(position)=0;
     U_t(position)=0;
-for time = 2013:2236
+for time = 1788:2012
     Qs_t(position) = Qs_t(position) + Qs(position,time);
     U_t(position) = U_t(position) + U(position,time);
 end
 % Tidally-averaged sediment transport
-meanQs_x = Qs_t(position)/223;   
+meanQs_x = Qs_t(position)/224;   
 Qs_x = [Qs_x meanQs_x];
 
-meanU_x = U_t(position)/223;
+meanU_x = U_t(position)/224;
 U_x = [U_x meanU_x];
 end
 
