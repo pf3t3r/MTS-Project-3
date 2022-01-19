@@ -88,9 +88,6 @@ end
       Ws_legend{i} = num2str(WS(i),'W_s = %.4f m/s');
  end
 
-% Change t into hours
-t = t*3600;
- 
 figure
 
 subplot(4,1,1)
@@ -101,7 +98,6 @@ plot(t,Q_Ws(1,:));
 hold on
 xlabel('Time [s]');
 % ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
 yyaxis right
 plot(t,U_Ws(1,:))
 hold off
@@ -120,7 +116,7 @@ plot(t,Q_Ws(2:3,:));
 hold on
 xlabel('Time [s]');
 % ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
+ylabel('Q [gm^{-1}s^{-1}]');
 yyaxis right
 plot(t,U_Ws(2:3,:))
 hold off
@@ -138,7 +134,7 @@ plot(t,Q_Ws(4:end,:));
 hold on
 xlabel('Time [s]');
 % ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
+ylabel('Q [gm^{-1}s^{-1}]');
 yyaxis right
 plot(t,U_Ws(4:end,:))
 hold off
@@ -223,12 +219,9 @@ for i = 1:length(KV)
         [C(px,1:Nt)] = GroenModel(U(px,1:Nt), t, deltaT, T, Ws, alpha, Kv);
     end
     
-    Qs2 = U.*C;
-
     % Save C and U for each value of KV at the first point in x.    
     C_Kv(i,:) = C(1,:);
     U_Kv(i,:) = U(1,:);
-    Q_Kv(i,:) = Qs2(1,:);
     
     firstPeakInC = max(C(1,100:200));
     firstPeakInU = max(U(1,100:200));
@@ -246,23 +239,16 @@ end
       Kv_legend{i} = num2str(KV(i),'K_v = %.4f m^{2}s^{-1}');
  end
 
- 
-% Change t into hours
-t = t*3600;
- 
 figure
 
 subplot(4,1,1)
 yyaxis left
-% plot(t,C_Kv(1,:));
-plot(t,Q_Kv(1,:));
-hold on
+plot(t,C_Kv(1,:))
 xlabel('Time [s]');
-% ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
+ylabel('C [kgm^{-2}]');
+hold on
 yyaxis right
 plot(t,U_Kv(1,:))
-hold off
 ylabel('U [m/s]');
 legend(Kv_legend(1));
 grid(gca,'minor')
@@ -271,15 +257,12 @@ title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: I')
 
 subplot(4,1,2)
 yyaxis left
-% plot(t,C_Kv(2:3,:))
-plot(t,Q_Kv(2:3,:));
-hold on
+plot(t,C_Kv(2:3,:))
 xlabel('Time [s]');
-% ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
+ylabel('C [kgm^{-2}]');
+hold on
 yyaxis right
 plot(t,U_Kv(2:3,:))
-hold off
 ylabel('U [m/s]');
 legend(Kv_legend(2:3));
 grid(gca,'minor')
@@ -288,15 +271,12 @@ title('Sensitivity of Duration Asymmetry to Eddy Diffusivity: II - III')
 
 subplot(4,1,3)
 yyaxis left
-% plot(t,C_Kv(4:end,:))
-plot(t,Q_Kv(4:end,:));
-hold on
+plot(t,C_Kv(4:end,:))
 xlabel('Time [s]');
-% ylabel('C [kgm^{-2}]');
-ylabel('Q [kgm^{-1}s^{-1}]');
+ylabel('C [kgm^{-2}]');
+hold on
 yyaxis right
 plot(t,U_Kv(4:end,:))
-hold off
 ylabel('U [m/s]');
 legend(Kv_legend(4:end));
 grid(gca,'minor')
