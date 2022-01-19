@@ -149,10 +149,10 @@ legend('Concentration without advection','Concentration with advection','Transpo
 hold off
 if i==1
 subplot(4,1,2);
-title('Mean flow when phaseM2-phaseM4=0');
+title('Mean flow when 2*phaseM2-phaseM4=0');
 elseif i==2  
 subplot(4,1,4);
-title('Mean flow when phaseM2-phaseM4={\pi/2}');
+title('Mean flow when 2*phaseM2-phaseM4={\pi/2}');
 end
 plot(t(241:409)/3600,U(1,241:409))
 hold on
@@ -354,12 +354,13 @@ plot(x/1000,DIFF_Qs2_M4*1000)
 ylabel('Flux difference [g/(m*s)]');
 hold on 
 yyaxis right
-%plot(x/1000,U_x)
+plot(x/1000,U_x)
 %plot(x/1000,UM2)
 plot(x/1000,UM4)
+%plot(x/1000,U0)
 ylabel('Mean flow [m/s]');
 xlabel('x [km]');
-legend('Difference in tidally averaged sediment transport Qs_{UM2}-Qs_U','Tidally averaged M4 flow');
+legend('Difference in tidally averaged sediment transport Qs_{UM2}-Qs_U','TIdally averaged flow velocity U','Tidally averaged M4 flow U_{M4}');
 title('Impact of higher harmonics (M4) on sediment transport')
 hold off
 savefig('Matlab3_2_ii');
@@ -554,7 +555,7 @@ hold on
 scatter(WS,abs(DIFF_QS2_M4)*1000)
 xlabel('Ws [m/s]');
 %legend('Difference in sediment transport without advection','Difference in sediment transport with advection');
-title('Sensiivity Analysis of sediment transport with advection for varying fall velocities (Ws [m/s])')
+title('Sensiivity Analysis of settling lag mechanism for varying fall velocities (Ws [m/s])')
 hold off
 savefig('Matlab3_2_iii');
 

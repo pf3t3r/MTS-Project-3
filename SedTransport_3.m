@@ -5,8 +5,9 @@ clc; clear; close all;
 % Coefficients and typical values
 alpha = 1e-4;                   % Erosion coefficent
 Ws = 3e-3;                      % Fall velocity
-Cd = 0.2e-3;                    % Typical drag coefficient [] (Matlab 2)
-U = 8;                          % Typical flow velocity [m/s] (Matlab 2)
+Cd = 2.5e-2;                    % Typical drag coefficient [] (Matlab 2)
+%U = 8;                         % Typical flow velocity [m/s] (Matlab 2)
+U = 0.052; 
 H0 = 8.5;                       % Equilibrium Depth [m] (Matlab 2) 
 Kv = Cd*U*H0;                   % Vertical Eddy Diffusivity; this should be 
                                 % close to 1e-2.
