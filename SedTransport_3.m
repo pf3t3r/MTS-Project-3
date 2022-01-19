@@ -233,13 +233,13 @@ for px = 1:Nx
     phaseUM4(px) = atan(coefout(3)/coefout(5));
 end
 
-% 1. Tidally-averaged sediment transport vs. mean flow.
+% 1. Tidally-averaged sediment transport vs. average flow.
 figure
 
 plot(U_avg*1000,Qs_x);
 xlabel('U [mm/s]');
 ylabel('Q_s [kg m^{-1} s^{-1}]');
-title('Sediment Transport vs. Mean Flow');
+title('Sediment Transport vs. Average Flow');
 grid on;
 savefig('Matlab3_3_iii');
 
@@ -256,9 +256,6 @@ grid on;
 title('Sediment transport vs. velocity of tidal component');
 savefig('Matlab3_3_iv');
 
-%% Relationship of tidally-averaged sediment transport to generation of higher harmonics
-% Do we need something here?
-
 %% Relationship of tidally-averaged sediment transport to the phase difference between M2 and M4 flow velocities
 
 phaseDiff = 2*phaseUM2 - phaseUM4;
@@ -270,6 +267,25 @@ ylabel('Q_s [kg m^{-1} s^{-1}]');
 title('Sediment transport vs. Phase Difference');
 grid on;
 savefig('Matlab3_3_v');
+
+%% Mean sediment transport due to ...
+% presence of mean flows
+qb_mf = alpha*U0.^3 + (3*alpha/2).*(UM2.^2).*U0;
+
+% tidal asymmetry
+qb_ta = (3*alpha/4).*(UM2.^2).*UM4.*cos(2*phaseM2 - phaseM4);
+
+% Plot of both of the above
+figure
+plot(x/1000,qb_mf*1000);
+hold on
+plot(x/1000,qb_ta*1000);
+hold off
+xlabel('x [km]');
+ylabel('u [mms^{-1}]');
+grid on;
+legend('mean flow','tidal asymmetry');
+title('Sediment transport by mean flow and tidal asymmetry');
 
 %% Answers to Part 3.
 % This will need to be rewritten/updated.
