@@ -146,37 +146,36 @@ for px = 1:Nx
     phaseUM6(px) = atan(coefout(4)/coefout(7));
 end
 %% Plots 
-phaseDiff = (2*phaseUM2(10) - phaseUM4(10))/pi*180
+phaseDiff = 2*phaseUM2 - phaseUM4
 
 %Plot relation of tidally averaged sediment transport to spatial pattern of mean flow 
 figure
-subplot(2,1,1);
-yyaxis right
-plot(t(1788:2012),U(20,1788:2012))
-ylabel('Flow velocity [m/s]');
-xlabel('Time [s]');
-hold on
-plot(t(1788:2012),U(40,1788:2012))
-plot(t(1788:2012),U(60,1788:2012))
-plot(t(1788:2012),U(80,1788:2012))
-hold off
+subplot(4,1,1);
 yyaxis left
-plot(t(1788:2012),Qs(20,1788:2012))
+plot(t/3600,U(20,:))
+ylabel('Flow velocity [m/s]');
+hold on
+plot(t/3600,U(40,:))
+plot(t/3600,U(60,:))
+plot(t/3600,U(80,:))
+hold off
+yyaxis right
+plot(t/3600,Qs(20,:))
 ylabel('Flux [kg m^{-1} s^{-1}]');
 hold on
-plot(t(1788:2012),Qs(40,1788:2012))
-plot(t(1788:2012),Qs(60,1788:2012))
-plot(t(1788:2012),Qs(80,1788:2012))
+plot(t/3600,Qs(40,:))
+plot(t/3600,Qs(60,:))
+plot(t/3600,Qs(80,:))
 hold off
 legend('40km','80km','120km','160km');
 title('Sediment transport and flow velocity over time for multiple positions in the esturary');
 
-subplot(2,1,2);
-yyaxis left
+subplot(4,1,2);
+yyaxis right
 plot(x/1000,Qs_x)
 ylabel('Flux [kg m^{-1} s^{-1}]');
 hold on 
-yyaxis right
+yyaxis left
 plot(x/1000,U_x)
 plot(x/1000,UM2)
 plot(x/1000,UM4)
@@ -186,27 +185,50 @@ legend('Tidally averaged sediment transport Qs_U','TIdally averaged flow velocit
 title('Tidally averaged flow velocities and sediment transport')
 grid on;
 hold off
-savefig('Matlab3_3_i');
 
-figure
-subplot(2,1,1);
+subplot(4,1,3);
 plot(U_x,Qs_x);
 xlabel('Velocity [m/s]');
-ylabel('Flux [kg m^{-1} s^{-1}]');
-title('Sediment transport vs. average flow');
-grid on,
+grid on;
 
-subplot(2,1,2);
+subplot(4,1,4);
 plot(UM2, Qs_x);
 hold on
 plot(UM4, Qs_x);
 xlabel('Velocity [m/s]');
 hold off
 ylabel('Flux [kg m^{-1} s^{-1}]');
-title('Sediment transport vs. velocity of tidal component');
-legend('U_{M2}','U_{M4}');
+title('Sediment transport vs. average Flow, velocity of tidal component ');
+legend('U','U_{M2}','U_{M4}');
 grid on;
-savefig('Matlab3_3_ii');
+savefig('Matlab3_3_i');
+%% Relationship of tidally-averaged sediment transport to magnitude of tidal flows
+% So this refers to the individual components UM2, UM4. So we must plot
+% Q vs. UM2
+% Q vs. UM4
+
+% % 1. Tidally-averaged sediment transport vs. average flow.
+% figure
+% 
+% plot(U_x,Qs_x*1000);
+% xlabel('U [mm/s]');
+% ylabel('Flux [g m^{-1} s^{-1}]');
+% title('Sediment Transport vs. Average Flow');
+% grid on;
+% savefig('Matlab3_3_ii');
+% 
+% % 2. Tidally-averaged sediment transport vs. UM2, UM4
+% figure
+% plot(UM2, Qs_x);
+% hold on
+% plot(UM4, Qs_x);
+% hold off
+% xlabel('U [m/s]');
+% ylabel('Qs [kg m^{-1} s^{-1}]');
+% legend('U_{M2}','U_{M4}');
+% grid on;
+% title('Sediment transport vs. velocity of tidal component');
+% savefig('Matlab3_3_iii');
 %% Mean sediment transport due to ... NEW FORMULA 
 % presence of mean flows
 qb_mf = alpha*U0.^3 + (3*alpha/2).*(UM2.^2).*U0;
